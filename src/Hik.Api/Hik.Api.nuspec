@@ -8,7 +8,7 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<license type="expression">MIT</license>
 		<projectUrl>https://github.com/vov4uk/Hik.Api</projectUrl>
-		<description>Simple wrapper over Hikvision SDK, with min functonality. Login, fetch files list, download files and logut.</description>
+		<description>Simple wrapper over Hikvision SDK, with min functionality. Login, fetch files list, download files, and logout.</description>
 		<releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
 		<copyright>$copyright$</copyright>
 		<tags>Hikvision, SDK, ipcamera, photo, video</tags>
