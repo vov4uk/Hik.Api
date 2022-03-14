@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Hik.Api.Abstraction;
@@ -18,8 +19,6 @@ namespace Hik.Api
 
         public const string DllPath = @"SDK\HCNetSDK";
 
-
-
         public HikVideoService VideoService
         {
             get
@@ -36,20 +35,15 @@ namespace Hik.Api
             }
         }
 
-        public bool Initialize()
-        {
-            return SdkHelper.InvokeSDK(() => NET_DVR_Init());
-        }
+        public bool Initialize() => SdkHelper.InvokeSDK(() => NET_DVR_Init());
 
         public bool SetConnectTime(uint waitTimeMilliseconds, uint tryTimes)
-        {
-            return SdkHelper.InvokeSDK(() => NET_DVR_SetConnectTime(waitTimeMilliseconds, tryTimes)); // 2000 , 1
-        }
+            => SdkHelper.InvokeSDK(() => NET_DVR_SetConnectTime(waitTimeMilliseconds, tryTimes)); // 2000 , 1
+
 
         public bool SetReconnect(uint interval, int enableRecon)
-        {
-            return SdkHelper.InvokeSDK(() => NET_DVR_SetReconnect(interval, enableRecon)); // 10000 , 1
-        }
+            => SdkHelper.InvokeSDK(() => NET_DVR_SetReconnect(interval, enableRecon)); // 10000 , 1
+
 
         /// <summary>Setups the logs.</summary>
         /// <param name="logLevel">Log level. 0- close log(default), 1- output ERROR log only, 2- output ERROR and DEBUG log, 3- output all log, including ERROR, DEBUG and INFO log</param>
@@ -65,7 +59,9 @@ namespace Hik.Api
         {
             NET_DVR_DEVICEINFO_V30 deviceInfo = default;
             int userId = SdkHelper.InvokeSDK(() => NET_DVR_Login_V30(ipAddress, port, userName, password, ref deviceInfo));
-            return new Session(userId, deviceInfo.byIPChanNum);
+
+            var ipChannels = InfoIPChannel(userId, deviceInfo);
+            return new Session(userId, deviceInfo.byIPChanNum, ipChannels);
         }
 
         public void Cleanup()
@@ -80,7 +76,6 @@ namespace Hik.Api
 
         public HdInfo GetHddStatus(int userId)
         {
-
             NET_DVR_HDCFG hdConfig = default;
             uint returned = 0;
             int sizeOfConfig = Marshal.SizeOf(hdConfig);
@@ -99,6 +94,70 @@ namespace Hik.Api
             return new HdInfo(hdConfig.struHDInfo[0]);
         }
 
+        private List<IpChannel> InfoIPChannel(int userId, NET_DVR_DEVICEINFO_V30 deviceInfo)
+        {
+            var ipChannels = new List<IpChannel>();
+
+            var dwAnalogChannelTotalNumber = deviceInfo.byChanNum;
+            uint dwDigitalChannelTotalNumber = deviceInfo.byIPChanNum + 256 * (uint)deviceInfo.byHighDChanNum;
+
+            if (dwDigitalChannelTotalNumber > 0)
+            {
+                NET_DVR_IPPARACFG_V40 struIpParaCfgV40 = default;
+
+                int dwSize = Marshal.SizeOf(struIpParaCfgV40);
+
+                IntPtr ptrIpParaCfgV40 = Marshal.AllocHGlobal(dwSize);
+                Marshal.StructureToPtr(struIpParaCfgV40, ptrIpParaCfgV40, false);
+
+                uint dwReturn = 0;
+                int iGroupNo = 0;
+                //The demo just acquire 64 channels of first group.
+                //If ip channels of device is more than 64,you should call NET_DVR_GET_IPPARACFG_V40 times to acquire more according to group 0~i
+
+                var ipChannelsConfig = SdkHelper.InvokeSDK(() => NET_DVR_GetDVRConfig(userId, HikConst.NET_DVR_GET_IPPARACFG_V40, iGroupNo, ptrIpParaCfgV40, (uint)dwSize, ref dwReturn));
+                if (ipChannelsConfig)
+                {
+                    // succ
+                    struIpParaCfgV40 = (NET_DVR_IPPARACFG_V40)Marshal.PtrToStructure(ptrIpParaCfgV40, typeof(NET_DVR_IPPARACFG_V40));
+
+                    byte byStreamType;
+                    uint iDChanNum = 64;
+
+                    if (dwDigitalChannelTotalNumber < 64)
+                    {
+                        //If the ip channels of device is less than 64,will get the real channel of device
+                        iDChanNum = dwDigitalChannelTotalNumber;
+                    }
+
+                    for (int i = 0; i < iDChanNum; i++)
+                    {
+                        byStreamType = struIpParaCfgV40.struStreamMode[i].byGetStreamType;
+                        var unionGetStream = struIpParaCfgV40.struStreamMode[i].uGetStream;
+
+                        switch (byStreamType)
+                        {
+                            //At present NVR just support case 0-one way to get stream from device
+                            case 0:
+                                dwSize = Marshal.SizeOf(unionGetStream);
+                                IntPtr ptrChanInfo = Marshal.AllocHGlobal(dwSize);
+                                Marshal.StructureToPtr(unionGetStream, ptrChanInfo, false);
+                                var struChanInfo = (NET_DVR_IPCHANINFO)Marshal.PtrToStructure(ptrChanInfo, typeof(NET_DVR_IPCHANINFO));
+
+                                //List ip channels
+                                ipChannels.Add(new IpChannel(i + (int)struIpParaCfgV40.dwStartDChan, struChanInfo.byEnable, struChanInfo.byIPID));
+                                Marshal.FreeHGlobal(ptrChanInfo);
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                }
+                Marshal.FreeHGlobal(ptrIpParaCfgV40);
+            }
+            return ipChannels;
+        }
 
         [DllImport(DllPath)]
         private static extern bool NET_DVR_Init();

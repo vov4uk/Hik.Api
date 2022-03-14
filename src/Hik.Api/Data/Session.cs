@@ -1,14 +1,15 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Hik.Api.Data
 {
     [ExcludeFromCodeCoverage]
     public class Session
     {
-        public Session(int userId, byte channelNumber)
+        public Session(int userId, byte channelNumber, IReadOnlyCollection<IpChannel> ipChannels)
         {
-            this.UserId = userId;
-            this.Device = new DeviceInfo { ChannelNumber = channelNumber};
+            UserId = userId;
+            Device = new DeviceInfo(channelNumber, ipChannels);
         }
 
         public int UserId { get; }

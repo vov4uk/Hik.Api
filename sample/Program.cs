@@ -2,6 +2,7 @@
 using Hik.Api.Abstraction;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConsoleApp
@@ -25,41 +26,62 @@ namespace ConsoleApp
                 var session = hikApi.Login("192.168.1.64", 8000, "admin", "password");
                 Console.WriteLine("Login success");
 
-                //Get photos files for last 2 hours
-                var photos = await hikApi.PhotoService.FindFilesAsync(DateTime.Now.AddHours(-2), DateTime.Now, session);
-                Console.WriteLine($"Found {photos.Count} photos");
-                foreach (var photo in photos)
+                if (session.Device.IpChannels.Any())
                 {
-                    var destinationPath = Path.Combine(Environment.CurrentDirectory, "Photos", photo.Name + ".jpg");
-                    hikApi.PhotoService.DownloadFile(session.UserId, photo.Name, photo.Size, destinationPath);
-                    Console.WriteLine($"Photo saved to {destinationPath}");
-                }
-
-                //Get video files for last 4 hours
-                var videos = await hikApi.VideoService.FindFilesAsync(DateTime.Now.AddHours(-4), DateTime.Now, session);
-                Console.WriteLine($"Found {videos.Count} videos");
-                foreach (var video in videos)
-                {
-                    var destinationPath = Path.Combine(Environment.CurrentDirectory, "Videos", video.Name + ".mp4");
-                    var downloadId = hikApi.VideoService.StartDownloadFile(session.UserId, video.Name, destinationPath);
-                    Console.WriteLine($"Downloding {destinationPath}");
-                    do
+                    Console.WriteLine($"Found {session.Device.IpChannels} IpChannels");
+                    foreach (var channel in session.Device.IpChannels)
                     {
-                        await Task.Delay(5000);
-                        int downloadProgress = hikApi.VideoService.GetDownloadPosition(downloadId);
-                        Console.WriteLine($"Downloding {downloadProgress} %");
-                        if (downloadProgress == 100)
+                        Console.WriteLine($"IP Channel {channel.ChannelNumber}; IsOnline : {channel.IsOnline}; IsEmpty : {channel.IsEmpty}");
+                        if (channel.IsOnline)
                         {
-                            hikApi.VideoService.StopDownloadFile(downloadId);
-                            break;
-                        }
-                        else if (downloadProgress < 0 || downloadProgress > 100)
-                        {
-                            throw new InvalidOperationException($"UpdateDownloadProgress failed, progress value = {downloadProgress}");
+                            var videos = await hikApi.VideoService.FindFilesAsync(DateTime.Now.AddHours(-4), DateTime.Now, session, channel.ChannelNumber);
+                            Console.WriteLine($"Found {videos.Count} videos");
+                            foreach (var video in videos)
+                            {
+                                Console.WriteLine(video.Name);
+                            }
                         }
                     }
-                    while (true);
-                    Console.WriteLine($"Downloaded {destinationPath}");
+                }
+                else
+                {
+
+                    //Get photos files for last 2 hours
+                    var photos = await hikApi.PhotoService.FindFilesAsync(DateTime.Now.AddHours(-2), DateTime.Now, session);
+                    Console.WriteLine($"Found {photos.Count} photos");
+                    foreach (var photo in photos)
+                    {
+                        var destinationPath = Path.Combine(Environment.CurrentDirectory, "Photos", photo.Name + ".jpg");
+                        hikApi.PhotoService.DownloadFile(session.UserId, photo.Name, photo.Size, destinationPath);
+                        Console.WriteLine($"Photo saved to {destinationPath}");
+                    }
+
+                    //Get video files for last 4 hours
+                    var videos = await hikApi.VideoService.FindFilesAsync(DateTime.Now.AddHours(-4), DateTime.Now, session);
+                    Console.WriteLine($"Found {videos.Count} videos");
+                    foreach (var video in videos)
+                    {
+                        var destinationPath = Path.Combine(Environment.CurrentDirectory, "Videos", video.Name + ".mp4");
+                        var downloadId = hikApi.VideoService.StartDownloadFile(session.UserId, video.Name, destinationPath);
+                        Console.WriteLine($"Downloding {destinationPath}");
+                        do
+                        {
+                            await Task.Delay(5000);
+                            int downloadProgress = hikApi.VideoService.GetDownloadPosition(downloadId);
+                            Console.WriteLine($"Downloding {downloadProgress} %");
+                            if (downloadProgress == 100)
+                            {
+                                hikApi.VideoService.StopDownloadFile(downloadId);
+                                break;
+                            }
+                            else if (downloadProgress < 0 || downloadProgress > 100)
+                            {
+                                throw new InvalidOperationException($"UpdateDownloadProgress failed, progress value = {downloadProgress}");
+                            }
+                        }
+                        while (true);
+                        Console.WriteLine($"Downloaded {destinationPath}");
+                    }
                 }
 
                 hikApi.Logout(session.UserId);
