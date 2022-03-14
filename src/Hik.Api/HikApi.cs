@@ -65,7 +65,7 @@ namespace Hik.Api
         {
             NET_DVR_DEVICEINFO_V30 deviceInfo = default;
             int userId = SdkHelper.InvokeSDK(() => NET_DVR_Login_V30(ipAddress, port, userName, password, ref deviceInfo));
-            return new Session(userId, deviceInfo.byChanNum);
+            return new Session(userId, deviceInfo.byIPChanNum);
         }
 
         public void Cleanup()

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hik.Api" Version="1.0.12" />
+    <ProjectReference Include="..\src\Hik.Api\Hik.Api.csproj" />
   </ItemGroup>
 
 </Project>
