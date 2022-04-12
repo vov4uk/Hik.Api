@@ -9,10 +9,10 @@ namespace Hik.Api.Struct.Config
     {
         public uint dwSize;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = HikConst.MAX_ETHERNET, ArraySubType = UnmanagedType.Struct)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = HikConst.MAX_ETHERNET)]
         public NET_DVR_ETHERNET_V30[] struEtherNet;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.Struct)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         public NET_DVR_IPADDR[] struRes1;
 
         public NET_DVR_IPADDR struAlarmHostIpAddr;

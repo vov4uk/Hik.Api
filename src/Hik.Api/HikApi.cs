@@ -61,7 +61,7 @@ namespace Hik.Api
             int userId = SdkHelper.InvokeSDK(() => NET_DVR_Login_V30(ipAddress, port, userName, password, ref deviceInfo));
 
             var ipChannels = InfoIPChannel(userId, deviceInfo);
-            return new Session(userId, deviceInfo.byIPChanNum, ipChannels);
+            return new Session(userId, deviceInfo.byChanNum, ipChannels);
         }
 
         public void Cleanup()
