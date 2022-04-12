@@ -9,14 +9,14 @@ namespace Hik.Api.Services
 {
     public abstract class FileService
     {
-        public virtual async Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session)
+        public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session)
         {
-            int findId = this.StartFind(session.UserId, periodStart, periodEnd, session.Device.ChannelNumber);
+            return FindFiles(periodStart, periodEnd, session, session.Device.DefaultIpChannel);
+        }
 
-            IEnumerable<HikRemoteFile> results = await this.GetFindResults(findId);
-
-            this.FindClose(findId);
-            return results.ToList();
+        public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session, int ipChannel)
+        {
+            return FindFiles(periodStart, periodEnd, session, ipChannel);
         }
 
         protected abstract int StartFind(int userId, DateTime periodStart, DateTime periodEnd, int channel);
@@ -48,6 +48,16 @@ namespace Hik.Api.Services
             }
 
             return results;
+        }
+
+        private async Task<IReadOnlyCollection<HikRemoteFile>> FindFiles(DateTime periodStart, DateTime periodEnd, Session session, int ipChannel)
+        {
+            int findId = this.StartFind(session.UserId, periodStart, periodEnd, ipChannel);
+
+            IEnumerable<HikRemoteFile> results = await this.GetFindResults(findId);
+
+            this.FindClose(findId);
+            return results.ToList();
         }
     }
 }

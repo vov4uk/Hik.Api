@@ -6,7 +6,6 @@ namespace Hik.Api.Data
 {
     public class HikRemoteFile 
     {
-
         internal HikRemoteFile(NET_DVR_FIND_PICTURE_V50 findData)
         {
             this.Name = findData.sFileName;

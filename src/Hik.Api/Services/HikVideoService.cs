@@ -47,11 +47,12 @@ namespace Hik.Api.Services
             NET_DVR_FILECOND_V40 findConditions = new NET_DVR_FILECOND_V40
             {
                 lChannel = channel,
-                dwFileType = 0xff, // all
-                dwIsLocked = 0xff, // all, locked and unlocked
+                dwFileType = 0xff, //0xff-All，0-Timing record，1-Motion detection，2-Alarm trigger，...
+                dwIsLocked = 0xff, //0-unfixed file，1-fixed file，0xff means all files (including fixed and unfixed files)
                 struStartTime = new NET_DVR_TIME(periodStart),
                 struStopTime = new NET_DVR_TIME(periodEnd),
             };
+
             return SdkHelper.InvokeSDK(() => NET_DVR_FindFile_V40(userId, ref findConditions));
         }
 

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "sample\ConsoleApp.csproj", "{1495B091-DCA9-4D99-94A9-1C3F3129F220}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hik.Api", "src\Hik.Api\Hik.Api.csproj", "{9A71F9E8-083A-4134-A054-80E950FFA6A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1495B091-DCA9-4D99-94A9-1C3F3129F220}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1495B091-DCA9-4D99-94A9-1C3F3129F220}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1495B091-DCA9-4D99-94A9-1C3F3129F220}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A71F9E8-083A-4134-A054-80E950FFA6A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A71F9E8-083A-4134-A054-80E950FFA6A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A71F9E8-083A-4134-A054-80E950FFA6A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A71F9E8-083A-4134-A054-80E950FFA6A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
