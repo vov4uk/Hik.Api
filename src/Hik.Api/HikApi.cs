@@ -17,7 +17,7 @@ namespace Hik.Api
         private HikVideoService videoService;
         private HikPhotoService pictureService;
 
-        public const string DllPath = @"SDK\HCNetSDK";
+        public const string DllPath = @"SDK\HCNetSDK.dll";
 
         public HikVideoService VideoService
         {
@@ -93,6 +93,105 @@ namespace Hik.Api
             Marshal.FreeHGlobal(ptrDeviceCfg);
             return new HdInfo(hdConfig.struHDInfo[0]);
         }
+
+        public DateTime GetTime(int userId)
+        {
+            NET_DVR_TIME m_struTimeCfg = default;
+
+            uint dwReturn = 0;
+            int nSize = Marshal.SizeOf(m_struTimeCfg);
+            IntPtr ptrTimeCfg = Marshal.AllocHGlobal(nSize);
+            Marshal.StructureToPtr(m_struTimeCfg, ptrTimeCfg, false);
+
+            SdkHelper.InvokeSDK(() => NET_DVR_GetDVRConfig(userId, HikConst.NET_DVR_GET_TIMECFG, 1, ptrTimeCfg, (uint)nSize, ref dwReturn));
+
+            m_struTimeCfg = (NET_DVR_TIME)Marshal.PtrToStructure(ptrTimeCfg, typeof(NET_DVR_TIME));
+
+            Marshal.FreeHGlobal(ptrTimeCfg);
+
+            return m_struTimeCfg.ToDateTime();
+        }
+
+        public void SetTime(DateTime dateTime, int userId)
+        {
+            NET_DVR_TIME m_struTimeCfg = new NET_DVR_TIME(dateTime);
+            int nSize = Marshal.SizeOf(m_struTimeCfg);
+            IntPtr ptrTimeCfg = Marshal.AllocHGlobal(nSize);
+            Marshal.StructureToPtr(m_struTimeCfg, ptrTimeCfg, false);
+
+            SdkHelper.InvokeSDK(() => NET_DVR_SetDVRConfig(userId, HikConst.NET_DVR_SET_TIMECFG, -1, ptrTimeCfg, (uint)nSize));
+            Marshal.FreeHGlobal(ptrTimeCfg);
+        }
+
+        public DeviceConfig GetDeviceConfig(int userId)
+        {
+            NET_DVR_DEVICECFG_V40 m_struDeviceCfg = default;
+
+            uint dwReturn = 0;
+            int nSize = Marshal.SizeOf(m_struDeviceCfg);
+            IntPtr ptrDeviceCfg = Marshal.AllocHGlobal(nSize);
+            Marshal.StructureToPtr(m_struDeviceCfg, ptrDeviceCfg, false);
+
+            SdkHelper.InvokeSDK(() => NET_DVR_GetDVRConfig(userId, HikConst.NET_DVR_GET_DEVICECFG_V40, -1, ptrDeviceCfg, (uint)nSize, ref dwReturn));
+
+            m_struDeviceCfg = (NET_DVR_DEVICECFG_V40)Marshal.PtrToStructure(ptrDeviceCfg, typeof(NET_DVR_DEVICECFG_V40));
+
+            uint iVer1 = (m_struDeviceCfg.dwSoftwareVersion >> 24) & 0xFF;
+            uint iVer2 = (m_struDeviceCfg.dwSoftwareVersion >> 16) & 0xFF;
+            uint iVer3 = m_struDeviceCfg.dwSoftwareVersion & 0xFFFF;
+            uint iVer4 = (m_struDeviceCfg.dwSoftwareBuildDate >> 16) & 0xFFFF;
+            uint iVer5 = (m_struDeviceCfg.dwSoftwareBuildDate >> 8) & 0xFF;
+            uint iVer6 = m_struDeviceCfg.dwSoftwareBuildDate & 0xFF;
+
+            var deviceConfig = new DeviceConfig
+            {
+                Name = System.Text.Encoding.UTF8.GetString(m_struDeviceCfg.sDVRName).Trim('\0'),
+                TypeName = System.Text.Encoding.UTF8.GetString(m_struDeviceCfg.byDevTypeName).Trim('\0'),
+                AnalogChannel = Convert.ToInt32(m_struDeviceCfg.byChanNum),
+                IPChannel = Convert.ToInt32(m_struDeviceCfg.byIPChanNum + 256 * m_struDeviceCfg.byHighIPChanNum),
+                ZeroChannel = Convert.ToInt32(m_struDeviceCfg.byZeroChanNum),
+                NetworkPort = Convert.ToInt32(m_struDeviceCfg.byNetworkPortNum),
+                AlarmInPort = Convert.ToInt32(m_struDeviceCfg.byAlarmInPortNum),
+                AlarmOutPort = Convert.ToInt32(m_struDeviceCfg.byAlarmOutPortNum),
+                Serial = System.Text.Encoding.UTF8.GetString(m_struDeviceCfg.sSerialNumber).Trim('\0'),
+                Version = $"V{iVer1}.{iVer2}.{iVer3} Build {iVer4,0:D2}{iVer5,0:D2}{iVer6,0:D2}"
+            };
+
+            Marshal.FreeHGlobal(ptrDeviceCfg);
+            return deviceConfig;
+        }
+
+        public NetworkConfig GetNetworkConfig(int userId)
+        {
+            NET_DVR_NETCFG_V30 m_struNetCfg = default;
+            uint dwReturn = 0;
+            int nSize = Marshal.SizeOf(m_struNetCfg);
+            IntPtr ptrNetCfg = Marshal.AllocHGlobal(nSize);
+            Marshal.StructureToPtr(m_struNetCfg, ptrNetCfg, false);
+
+            SdkHelper.InvokeSDK(() => NET_DVR_GetDVRConfig(userId, HikConst.NET_DVR_GET_NETCFG_V30, -1, ptrNetCfg, (uint)nSize, ref dwReturn));
+            m_struNetCfg = (NET_DVR_NETCFG_V30)Marshal.PtrToStructure(ptrNetCfg, typeof(NET_DVR_NETCFG_V30));
+
+            NetworkConfig networkConfig = new NetworkConfig
+            {
+                IPAddress = m_struNetCfg.struEtherNet[0].struDVRIP.sIpV4,
+                GateWay = m_struNetCfg.struGatewayIpAddr.sIpV4,
+                SubMask = m_struNetCfg.struEtherNet[0].struDVRIPMask.sIpV4,
+                Dns = m_struNetCfg.struDnsServer1IpAddr.sIpV4,
+                HostIP = m_struNetCfg.struAlarmHostIpAddr.sIpV4,
+                AlarmHostIpPort = Convert.ToInt32(m_struNetCfg.wAlarmHostIpPort),
+                HttpPort = Convert.ToInt32(m_struNetCfg.wHttpPortNo),
+                DVRPort = Convert.ToInt32(m_struNetCfg.struEtherNet[0].wDVRPort),
+                DHCP = m_struNetCfg.byUseDhcp == 1,
+                PPPoE = m_struNetCfg.struPPPoE.dwPPPOE == 1,
+                PPPoEName = System.Text.Encoding.UTF8.GetString(m_struNetCfg.struPPPoE.sPPPoEUser).Trim('\0'),
+                PPPoEPassword = m_struNetCfg.struPPPoE.sPPPoEPassword
+            };
+
+            Marshal.FreeHGlobal(ptrNetCfg);
+            return networkConfig;
+        }
+
 
         private List<IpChannel> InfoIPChannel(int userId, NET_DVR_DEVICEINFO_V30 deviceInfo)
         {
@@ -182,5 +281,9 @@ namespace Hik.Api
 
         [DllImport(DllPath)]
         private static extern bool NET_DVR_GetDVRConfig(int lUserID, uint dwCommand, int lChannel, IntPtr lpOutBuffer, uint dwOutBufferSize, ref uint lpBytesReturned);
+
+        [DllImport(DllPath)]
+        public static extern bool NET_DVR_SetDVRConfig(int lUserID, uint dwCommand, int lChannel, IntPtr lpInBuffer, uint dwInBufferSize);
+
     }
 }

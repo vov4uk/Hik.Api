@@ -1,7 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace Hik.Api.Struct.Config
 {
+    [ExcludeFromCodeCoverage]
     [StructLayout(LayoutKind.Sequential)]
     internal struct NET_DVR_HDCFG
     {

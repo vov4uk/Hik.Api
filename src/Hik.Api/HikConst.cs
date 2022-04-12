@@ -1,6 +1,6 @@
 ﻿namespace Hik.Api
 {
-    public static class HikConst
+    internal static class HikConst
     {
         public const int CARDNUM_LEN_OUT = 32;
         public const int GUID_LEN = 16;
@@ -23,5 +23,12 @@
         public const int MAX_DOMAIN_NAME = 64;
         public const int NAME_LEN = 32;
         public const int PASSWD_LEN = 16;
+        public const int NET_DVR_GET_TIMECFG = 118;
+        public const int NET_DVR_SET_TIMECFG = 119;
+        public const int DEV_TYPE_NAME_LEN = 24;
+        public const int NET_DVR_GET_DEVICECFG_V40 = 1100;
+        public const int MAX_ETHERNET = 2;
+        public const int MACADDR_LEN = 6;
+        public const int NET_DVR_GET_NETCFG_V30 = 1000;
     }
 }

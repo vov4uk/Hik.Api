@@ -298,6 +298,57 @@ namespace Hik.Api
         [Description("DDNS inner error.")]
         NET_DVR_DDNS_INTER_ERROR = 97,
 
+        [Description("This function don't support this OS.")]
+        NET_DVR_FUNCTION_NOT_SUPPORT_OS = 98,
+
+        [Description("Decode channel can not bind with two display channel.")]
+        NET_DVR_DEC_CHAN_REBIND = 99,
+
+        [Description("Failed to load the audio intercom SDK from current directory.")]
+        NET_DVR_INTERCOM_SDK_ERROR = 100,
+
+        [Description("No current upgrade pack.")]
+        NET_DVR_NO_CURRENT_UPDATEFILE = 101,
+
+        [Description("The user has not logined the device.")]
+        NET_DVR_USER_NOT_SUCC_LOGIN = 102,
+
+        [Description("It is using the log swtich file.")]
+        NET_DVR_USE_LOG_SWITCH_FILE = 103,
+
+        [Description("The ports used to bound in port pool is exhausted.")]
+        NET_DVR_POOL_PORT_EXHAUST = 104,
+
+        [Description("The packet type of stream is error.")]
+        NET_DVR_PACKET_TYPE_NOT_SUPPORT = 105,
+
+        [Description("IPID of IP access configuration is error.")]
+        NET_DVR_IPPARA_IPID_ERROR = 106,
+
+        [Description("Load Preview component Failed.")]
+        NET_DVR_LOAD_HCPREVIEW_SDK_ERROR = 107,
+
+        [Description("Load Voice talk component Failed.")]
+        NET_DVR_LOAD_HCVOICETALK_SDK_ERROR = 108,
+
+        [Description("Load Alarm component Failed.")]
+        NET_DVR_LOAD_HCALARM_SDK_ERROR = 109,
+
+        [Description("Load Playback component Failed.")]
+        NET_DVR_LOAD_HCPLAYBACK_SDK_ERROR = 110,
+
+        [Description("Load Display component Failed.")]
+        NET_DVR_LOAD_HCDISPLAY_SDK_ERROR = 111,
+
+        [Description("Load Industry component Failed.")]
+        NET_DVR_LOAD_HCINDUSTRY_SDK_ERROR = 112,
+
+        [Description("Load general configuration management component failed.")]
+        NET_DVR_LOAD_HCGENERALCFGMGR_SDK_ERROR = 113,
+
+        [Description("Load configuration core component failed.")]
+        NET_DVR_LOAD_HCCOREDEVCFG_SDK_ERROR = 114,
+
         [Description("Alias is duplicate (for EasyDDNS)")]
         NET_DVR_ALIAS_DUPLICATE = 150,
 

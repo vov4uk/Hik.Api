@@ -1,5 +1,6 @@
 ﻿using Hik.Api;
 using Hik.Api.Abstraction;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,24 @@ namespace ConsoleApp
                 var session = hikApi.Login("192.168.1.64", 8000, "admin", "password");
                 Console.WriteLine("Login success");
 
+                // Get Camera time
+                var cameraTime = hikApi.GetTime(session.UserId);
+                Console.WriteLine($"Camera time :{cameraTime}");
+                var currentTime = DateTime.Now;
+                if (Math.Abs((currentTime - cameraTime).TotalSeconds) > 5)
+                {
+                    hikApi.SetTime(currentTime, session.UserId);
+                }
+
+                // GetNetworkConfig
+                var network = hikApi.GetNetworkConfig(session.UserId);
+                Console.WriteLine(JsonConvert.SerializeObject(network, Formatting.Indented));
+
+                // GetDeviceConfig
+                var device = hikApi.GetDeviceConfig(session.UserId);
+                Console.WriteLine(JsonConvert.SerializeObject(device, Formatting.Indented));
+
+                // For NVR
                 if (session.Device.IpChannels.Any())
                 {
                     Console.WriteLine($"Found {session.Device.IpChannels} IpChannels");
@@ -45,7 +64,6 @@ namespace ConsoleApp
                 }
                 else
                 {
-
                     //Get photos files for last 2 hours
                     var photos = await hikApi.PhotoService.FindFilesAsync(DateTime.Now.AddHours(-2), DateTime.Now, session);
                     Console.WriteLine($"Found {photos.Count} photos");

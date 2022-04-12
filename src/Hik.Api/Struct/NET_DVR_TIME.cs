@@ -8,21 +8,21 @@ namespace Hik.Api.Struct
     [StructLayout(LayoutKind.Sequential)]
     internal struct NET_DVR_TIME
     {
-        public int dwYear;
-        public int dwMonth;
-        public int dwDay;
-        public int dwHour;
-        public int dwMinute;
-        public int dwSecond;
+        public uint dwYear;
+        public uint dwMonth;
+        public uint dwDay;
+        public uint dwHour;
+        public uint dwMinute;
+        public uint dwSecond;
 
         public NET_DVR_TIME(DateTime dateTime)
         {
-            this.dwYear = dateTime.Year;
-            this.dwMonth = dateTime.Month;
-            this.dwDay = dateTime.Day;
-            this.dwHour = dateTime.Hour;
-            this.dwMinute = dateTime.Minute;
-            this.dwSecond = dateTime.Second;
+            this.dwYear = (uint)dateTime.Year;
+            this.dwMonth = (uint)dateTime.Month;
+            this.dwDay = (uint)dateTime.Day;
+            this.dwHour = (uint)dateTime.Hour;
+            this.dwMinute = (uint)dateTime.Minute;
+            this.dwSecond = (uint)dateTime.Second;
         }
 
         public override string ToString()
@@ -32,7 +32,7 @@ namespace Hik.Api.Struct
 
         public DateTime ToDateTime()
         {
-            return new DateTime(this.dwYear, this.dwMonth, this.dwDay, this.dwHour, this.dwMinute, this.dwSecond);
+            return new DateTime((int)this.dwYear, (int)this.dwMonth, (int)this.dwDay, (int)this.dwHour, (int)this.dwMinute, (int)this.dwSecond);
         }
     }
 }

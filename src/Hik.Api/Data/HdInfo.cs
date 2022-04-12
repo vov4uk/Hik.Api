@@ -41,9 +41,9 @@ namespace Hik.Api.Data
             sb.AppendLine(GetRow(nameof(FreeSpace), ToGB(FreeSpace)));
             sb.AppendLine(GetRow(nameof(PictureCapacity), ToGB(PictureCapacity)));
             sb.AppendLine(GetRow(nameof(FreePictureSpace), ToGB(FreePictureSpace)));
-            sb.AppendLine(GetRow(nameof(HdStatus), (HdStatuses.TryGetValue(HdStatus, out var status) ? status : "unknown")));
-            sb.AppendLine(GetRow(nameof(HDAttr), (HdAttributes.TryGetValue(HDAttr, out var atr) ? atr : "unknown")));
-            sb.AppendLine(GetRow(nameof(HDType), (HdTypes.TryGetValue(HDType, out var hdType) ? hdType : "unknown")));
+            sb.AppendLine(GetRow(nameof(HdStatus), HdStatuses.TryGetValue(HdStatus, out var status) ? status : "unknown"));
+            sb.AppendLine(GetRow(nameof(HDAttr), HdAttributes.TryGetValue(HDAttr, out var atr) ? atr : "unknown"));
+            sb.AppendLine(GetRow(nameof(HDType), HdTypes.TryGetValue(HDType, out var hdType) ? hdType : "unknown"));
             sb.AppendLine(GetRow(nameof(Recycling), Convert.ToString(Recycling)));
 
             return sb.ToString();

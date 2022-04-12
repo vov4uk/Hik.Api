@@ -30,7 +30,7 @@ namespace Hik.Api
             string val = value.ToString();
             FieldInfo fi = value.GetType().GetField(val);
 
-            if (fi.GetCustomAttributes(typeof(DescriptionAttribute), false) is DescriptionAttribute[] attributes && attributes.Any())
+            if (fi != null && fi.GetCustomAttributes(typeof(DescriptionAttribute), false) is DescriptionAttribute[] attributes && attributes.Any())
             {
                 return attributes.First().Description;
             }

@@ -1,9 +1,11 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace Hik.Api.Struct
 {
+    [ExcludeFromCodeCoverage]
     [StructLayout(LayoutKind.Sequential)]
-    public struct NET_DVR_IPCHANINFO
+    internal struct NET_DVR_IPCHANINFO
     {
         public byte byEnable;
         public byte byIPID;

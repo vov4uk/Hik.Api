@@ -1,5 +1,6 @@
 ﻿using Hik.Api.Data;
 using Hik.Api.Services;
+using System;
 
 namespace Hik.Api.Abstraction
 {
@@ -20,6 +21,14 @@ namespace Hik.Api.Abstraction
         Session Login(string ipAddress, int port, string userName, string password);
 
         HdInfo GetHddStatus(int userId);
+
+        DateTime GetTime(int userId);
+
+        void SetTime(DateTime dateTime, int userId);
+
+        DeviceConfig GetDeviceConfig(int userId);
+
+        NetworkConfig GetNetworkConfig(int userId);
 
         void Logout(int userId);
 
