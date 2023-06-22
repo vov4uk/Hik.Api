@@ -30,7 +30,7 @@ namespace Hik.Api.Services
             }
         }
 
-        protected override bool FindClose(int findId)
+        protected override bool StopFind(int findId)
         {
             return SdkHelper.InvokeSDK(() => NET_DVR_CloseFindPicture(findId));
         }

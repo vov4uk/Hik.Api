@@ -22,6 +22,6 @@
 	</metadata>
 	<files>
 		<file src="bin\$configuration$\netstandard2.1\SDK\*.*" target="contentFiles\any\any\SDK"/>
-		<file src="bin\$configuration$\netstandard2.1\SDK\HCNetSDKCom\*.dll" target="contentFiles\any\any\SDK\HCNetSDKCom\"/>
+		<file src="bin\$configuration$\netstandard2.1\SDK\HCNetSDKCom\*.*" target="contentFiles\any\any\SDK\HCNetSDKCom\"/>
 	</files>
 </package>

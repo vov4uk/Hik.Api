@@ -12,5 +12,7 @@
         public int ChannelNumber { get; }
         public bool IsOnline { get; }
         public bool IsEmpty { get; }
+
+        public string Name { get; set; }
     }
 }

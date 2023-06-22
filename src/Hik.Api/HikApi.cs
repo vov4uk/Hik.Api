@@ -57,7 +57,7 @@ namespace Hik.Api
 
         public Session Login(string ipAddress, int port, string userName, string password)
         {
-            NET_DVR_DEVICEINFO_V30 deviceInfo = default;
+            NET_DVR_DEVICEINFO_V30 deviceInfo = new NET_DVR_DEVICEINFO_V30();
             int userId = SdkHelper.InvokeSDK(() => NET_DVR_Login_V30(ipAddress, port, userName, password, ref deviceInfo));
 
             var ipChannels = InfoIPChannel(userId, deviceInfo);
@@ -211,14 +211,18 @@ namespace Hik.Api
 
                 uint dwReturn = 0;
                 int iGroupNo = 0;
-                //The demo just acquire 64 channels of first group.
-                //If ip channels of device is more than 64,you should call NET_DVR_GET_IPPARACFG_V40 times to acquire more according to group 0~i
 
                 var ipChannelsConfig = SdkHelper.InvokeSDK(() => NET_DVR_GetDVRConfig(userId, HikConst.NET_DVR_GET_IPPARACFG_V40, iGroupNo, ptrIpParaCfgV40, (uint)dwSize, ref dwReturn));
                 if (ipChannelsConfig)
                 {
                     // succ
                     struIpParaCfgV40 = (NET_DVR_IPPARACFG_V40)Marshal.PtrToStructure(ptrIpParaCfgV40, typeof(NET_DVR_IPPARACFG_V40));
+
+                    for (int i = 0; i < dwAnalogChannelTotalNumber; i++)
+                    {
+                        var channel = ListAnalogChannel(i + 1, struIpParaCfgV40.byAnalogChanEnable[i]);
+                        ipChannels.Add(channel);
+                    }
 
                     byte byStreamType;
                     uint iDChanNum = 64;
@@ -244,7 +248,8 @@ namespace Hik.Api
                                 var struChanInfo = (NET_DVR_IPCHANINFO)Marshal.PtrToStructure(ptrChanInfo, typeof(NET_DVR_IPCHANINFO));
 
                                 //List ip channels
-                                ipChannels.Add(new IpChannel(i + (int)struIpParaCfgV40.dwStartDChan, struChanInfo.byEnable, struChanInfo.byIPID));
+                                int channel = i + (int)struIpParaCfgV40.dwStartDChan;
+                                ipChannels.Add(new IpChannel(channel, struChanInfo.byEnable, struChanInfo.byIPID) { Name = $"IP Channel {channel}" });
                                 Marshal.FreeHGlobal(ptrChanInfo);
                                 break;
 
@@ -256,6 +261,13 @@ namespace Hik.Api
                 Marshal.FreeHGlobal(ptrIpParaCfgV40);
             }
             return ipChannels;
+        }
+
+        public IpChannel ListAnalogChannel(int iChanNo, byte byEnable)
+        {
+            var str1 = string.Format("Camera {0}", iChanNo);
+
+            return new IpChannel(iChanNo, byEnable, 0) { Name = str1 };//Add channels to list
         }
 
         [DllImport(DllPath)]

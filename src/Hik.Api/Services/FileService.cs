@@ -21,9 +21,10 @@ namespace Hik.Api.Services
 
         protected abstract int StartFind(int userId, DateTime periodStart, DateTime periodEnd, int channel);
 
+        protected abstract bool StopFind(int findId);
+
         internal abstract int FindNext(int findId, ref ISourceFile source);
 
-        protected abstract bool FindClose(int findId);
 
         protected async Task<IReadOnlyCollection<HikRemoteFile>> GetFindResults(int findId)
         {
@@ -56,7 +57,7 @@ namespace Hik.Api.Services
 
             IEnumerable<HikRemoteFile> results = await this.GetFindResults(findId);
 
-            this.FindClose(findId);
+            this.StopFind(findId);
             return results.ToList();
         }
     }

@@ -30,5 +30,7 @@
         public const int MAX_ETHERNET = 2;
         public const int MACADDR_LEN = 6;
         public const int NET_DVR_GET_NETCFG_V30 = 1000;
+
+        public const int STREAM_ID_LEN = 32;
     }
 }
