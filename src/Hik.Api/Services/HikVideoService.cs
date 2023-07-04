@@ -7,8 +7,18 @@ using System.Runtime.InteropServices;
 
 namespace Hik.Api.Services
 {
+    /// <summary>
+    /// Video service
+    /// </summary>
     public class HikVideoService : FileService
     {
+        /// <summary>
+        /// Start Download File
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sourceFile"></param>
+        /// <param name="destinationPath"></param>
+        /// <returns></returns>
         public virtual int StartDownloadFile(int userId, string sourceFile, string destinationPath)
         {
             int downloadHandle = SdkHelper.InvokeSDK(() => NET_DVR_GetFileByName(userId, sourceFile, destinationPath));
@@ -18,11 +28,20 @@ namespace Hik.Api.Services
             return downloadHandle;
         }
 
+        /// <summary>
+        /// Stop Download File
+        /// </summary>
+        /// <param name="fileHandle"></param>
         public virtual void StopDownloadFile(int fileHandle)
         {
             SdkHelper.InvokeSDK(() => NET_DVR_StopGetFile(fileHandle));
         }
 
+        /// <summary>
+        ///  Return current progress
+        /// </summary>
+        /// <param name="fileHandle"></param>
+        /// <returns></returns>
         public virtual int GetDownloadPosition(int fileHandle)
         {
             return SdkHelper.InvokeSDK(() => NET_DVR_GetDownloadPos(fileHandle));
@@ -37,6 +56,14 @@ namespace Hik.Api.Services
             return res;
         }
 
+        /// <summary>Starts the find.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="periodStart">The period start.</param>
+        /// <param name="periodEnd">The period end.</param>
+        /// <param name="channel">The channel.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         protected override int StartFind(int userId, DateTime periodStart, DateTime periodEnd, int channel)
         {
             NET_DVR_FILECOND_V40 findConditions = new NET_DVR_FILECOND_V40
@@ -51,6 +78,11 @@ namespace Hik.Api.Services
             return SdkHelper.InvokeSDK(() => NET_DVR_FindFile_V40(userId, ref findConditions));
         }
 
+        /// <summary>Stops the find.</summary>
+        /// <param name="findId">The find identifier.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         protected override bool StopFind(int findId)
         {
             return SdkHelper.InvokeSDK(() => NET_DVR_FindClose_V30(findId));

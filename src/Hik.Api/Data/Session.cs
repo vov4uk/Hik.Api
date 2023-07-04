@@ -3,17 +3,39 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Hik.Api.Data
 {
+    /// <summary>
+    /// Session
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class Session
     {
-        public Session(int userId, byte channelNumber, IReadOnlyCollection<IpChannel> ipChannels)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Session"/> class.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="channelNumber">The channel number.</param>
+        /// <param name="ipChannels">The ip channels.</param>
+        /// <param name="analogChannels">The analog channels.</param>
+        public Session(int userId, byte channelNumber, IReadOnlyCollection<IpChannel> ipChannels, IReadOnlyCollection<IpChannel> analogChannels)
         {
             UserId = userId;
-            Device = new DeviceInfo(channelNumber, ipChannels);
+            Device = new DeviceInfo(channelNumber, ipChannels, analogChannels);
         }
 
+        /// <summary>
+        /// Gets the user identifier.
+        /// </summary>
+        /// <value>
+        /// The user identifier.
+        /// </value>
         public int UserId { get; }
 
+        /// <summary>
+        /// Gets the device.
+        /// </summary>
+        /// <value>
+        /// The device.
+        /// </value>
         public DeviceInfo Device { get; }
     }
 }

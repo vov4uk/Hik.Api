@@ -7,25 +7,61 @@ using System.Threading.Tasks;
 
 namespace Hik.Api.Services
 {
+    /// <summary>
+    /// Base class to download files
+    /// </summary>
     public abstract class FileService
     {
+        /// <summary>
+        /// Get files list for defailt IP channel
+        /// </summary>
+        /// <param name="periodStart"></param>
+        /// <param name="periodEnd"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
         public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session)
         {
             return FindFiles(periodStart, periodEnd, session, session.Device.DefaultIpChannel);
         }
 
+        /// <summary>
+        /// Get files list for specific channel
+        /// </summary>
+        /// <param name="periodStart"></param>
+        /// <param name="periodEnd"></param>
+        /// <param name="session"></param>
+        /// <param name="ipChannel"></param>
+        /// <returns></returns>
         public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session, int ipChannel)
         {
             return FindFiles(periodStart, periodEnd, session, ipChannel);
         }
 
+        /// <summary>
+        /// Starts the find.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="periodStart">The period start.</param>
+        /// <param name="periodEnd">The period end.</param>
+        /// <param name="channel">The channel.</param>
+        /// <returns></returns>
         protected abstract int StartFind(int userId, DateTime periodStart, DateTime periodEnd, int channel);
 
+        /// <summary>
+        /// Stops the find.
+        /// </summary>
+        /// <param name="findId">The find identifier.</param>
+        /// <returns></returns>
         protected abstract bool StopFind(int findId);
 
         internal abstract int FindNext(int findId, ref ISourceFile source);
 
 
+        /// <summary>
+        /// Gets the find results.
+        /// </summary>
+        /// <param name="findId">The find identifier.</param>
+        /// <returns></returns>
         protected async Task<IReadOnlyCollection<HikRemoteFile>> GetFindResults(int findId)
         {
             var results = new List<HikRemoteFile>();

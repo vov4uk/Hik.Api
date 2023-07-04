@@ -11,12 +11,17 @@
     <RepositoryUrl>https://github.com/vov4uk/Hik.Api.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>Simple wrapper over Hikvision SDK, with minimum functionality. Login, fetch files list, download files, and log out.</Description>
-    <AssemblyVersion>1.0.14.2</AssemblyVersion>
-    <FileVersion>1.0.14.2</FileVersion>
-    <Version>1.0.14.2</Version>
+    <Description>Wrapper over Hikvision SDK version 5.3.6.30 x64.It allows login, fetch files list (videos and photos), download files, get config list and more.</Description>
+    <AssemblyVersion>1.0.15.3</AssemblyVersion>
+    <FileVersion>1.0.15.3</FileVersion>
+    <Version>1.0.15.3</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NoWarn>NU5100</NoWarn>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   <ItemGroup>

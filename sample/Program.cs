@@ -41,7 +41,6 @@ namespace ConsoleApp
                 var cameraTime = hikApi.GetTime(session.UserId);
                 Console.WriteLine($"Camera time :{cameraTime}");
 
-                hikApi.PlaybackService.RealDataReceived += VideoService_RealDataReceived;
                 playbackId = hikApi.PlaybackService.StartPlayBack(session.UserId, session.Device.DefaultIpChannel);
 
 
@@ -74,72 +73,39 @@ namespace ConsoleApp
             }
         }
 
-        private static void VideoService_RealDataReceived(object sender, byte[] e)
+        private static void DownloadCallback()
         {
-            //Console.WriteLine("Received {0} bytes", e.Length);
-            currentFragmentLenght += e.Length;
-            var filesize = currentFragmentLenght / (1024.0 * 1024.0);
-            Console.WriteLine("File size {0} mb", filesize);
-            //if (filesize > maxFileSizeMb)
+            DateTime start = DateTime.Now;
+            var filename = $"{start:yyyyMMdd_HHmmss}.mp4";
+            if (playbackId == 0)
             {
-                FileStream fs = null;
-                BinaryWriter bw = null;
-                try
+                playbackId = hikApi.PlaybackService.StartPlayBack(session.UserId, session.Device.DefaultIpChannel);
+                hikApi.PlaybackService.StartRecording(playbackId, filename, session.UserId, session.Device.DefaultIpChannel);
+                playbackFileName = filename;
+            }
+            else
+            {
+                FileInfo file = new FileInfo(playbackFileName);
+                var filesize = file.Length / (1024.0 * 1024.0);
+                Console.WriteLine("File size {0} mb", filesize);
+                if (filesize > maxFileSizeMb)
                 {
-                    fs = new FileStream($"DecodedVideo.mp4", FileMode.Append);
-                    bw = new BinaryWriter(fs);
+                    bool playbackStoped = hikApi.PlaybackService.StopRecording(playbackId);
+                    if (playbackStoped)
+                    {
+                        Console.WriteLine("Stop recording");
+                    }
 
-                    bw.Write(e);
+                    bool playbackStarted = hikApi.PlaybackService.StartRecording(playbackId, filename, session.UserId, session.Device.DefaultIpChannel);
+                    playbackFileName = filename;
+                    if (playbackStarted)
+                    {
+                        Console.WriteLine("Start recording");
+                    }
 
-                    bw.Flush();
+                    playbackFileName = filename;
                 }
-                catch (System.Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-                finally
-                {
-                    bw.Close();
-                    fs.Close();
-                }
-                currentFragmentLenght= 0;
-                bytes.Clear();
             }
         }
-
-        //private static void DownloadCallback()
-        //{
-        //    DateTime start = DateTime.Now;
-        //    var filename = $"{start:yyyyMMdd_HHmmss}.mp4";
-        //    if (playbackId == 0)
-        //    {
-        //        playbackId = hikApi.VideoService.StartPlayBack(session.UserId, session.Device.DefaultIpChannel);
-        //        hikApi.VideoService.StartRecording(playbackId, filename, session.UserId, session.Device.DefaultIpChannel);
-        //        playbackFileName = filename;
-        //    }
-        //    else
-        //    {
-        //        FileInfo file = new FileInfo(playbackFileName);
-        //        var filesize = file.Length / (1024.0 * 1024.0);
-        //        Console.WriteLine("File size {0} mb", filesize);
-        //        if (filesize > maxFileSizeMb)
-        //        {
-        //            bool playbackStoped = hikApi.VideoService.StopRecording(playbackId);
-        //            if (playbackStoped)
-        //            {
-        //                Console.WriteLine("Stop recording");
-        //            }
-
-        //            bool playbackStarted = hikApi.VideoService.StartRecording(playbackId, filename, session.UserId, session.Device.DefaultIpChannel);
-        //            playbackFileName = filename;
-        //            if (playbackStarted)
-        //            {
-        //                Console.WriteLine("Start recording");
-        //            }
-
-        //            playbackFileName = filename;
-        //        }
-        //    }
-        //}
     }
 }

@@ -8,8 +8,18 @@ using System.Runtime.InteropServices;
 
 namespace Hik.Api.Services
 {
+    /// <summary>
+    /// Photo service
+    /// </summary>
     public class HikPhotoService : FileService
     {
+        /// <summary>
+        /// Download File
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="remoteFileName"></param>
+        /// <param name="size"></param>
+        /// <param name="destinationPath"></param>
         public virtual void DownloadFile(int userId, string remoteFileName, long size, string destinationPath)
         {
             if (size > 0)
@@ -30,6 +40,11 @@ namespace Hik.Api.Services
             }
         }
 
+        /// <summary>Stops the find.</summary>
+        /// <param name="findId">The find identifier.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         protected override bool StopFind(int findId)
         {
             return SdkHelper.InvokeSDK(() => NET_DVR_CloseFindPicture(findId));
@@ -45,6 +60,14 @@ namespace Hik.Api.Services
             return res;
         }
 
+        /// <summary>Starts the find.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="periodStart">The period start.</param>
+        /// <param name="periodEnd">The period end.</param>
+        /// <param name="channel">The channel.</param>
+        /// <returns>
+        ///   <br />
+        /// </returns>
         protected override int StartFind(int userId, DateTime periodStart, DateTime periodEnd, int channel)
         {
 

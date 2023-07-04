@@ -11,6 +11,9 @@ using Hik.Api.Struct.Config;
 
 namespace Hik.Api
 {
+    /// <summary>
+    /// Implementation of IHikApi
+    /// </summary>
     [ExcludeFromCodeCoverage]
     public class HikApi : IHikApi
     {
@@ -18,9 +21,16 @@ namespace Hik.Api
         private HikPhotoService pictureService;
         private PlaybackService playbackService;
 
-        public const string HCNetSDK = @"SDK\HCNetSDK.dll";
-        public const string PlayCtrl = @"SDK\PlayCtrl.dll";
+        private uint dwAChanTotalNum = 0;
+        private uint dwDChanTotalNum = 0;
 
+        private NET_DVR_IPCHANINFO struChanInfo;
+        private NET_DVR_IPCHANINFO_V40 struChanInfoV40;
+
+        internal const string HCNetSDK = @"SDK\HCNetSDK.dll";
+
+        /// <summary>Gets the video service.</summary>
+        /// <value>The video service.</value>
         public HikVideoService VideoService
         {
             get
@@ -29,6 +39,8 @@ namespace Hik.Api
             }
         }
 
+        /// <summary>Gets the photo service.</summary>
+        /// <value>The photo service.</value>
         public HikPhotoService PhotoService
         {
             get
@@ -37,6 +49,8 @@ namespace Hik.Api
             }
         }
 
+        /// <summary>Gets the playback service.</summary>
+        /// <value>The playback service.</value>
         public PlaybackService PlaybackService
         {
             get
@@ -45,15 +59,29 @@ namespace Hik.Api
             }
         }
 
+        /// <summary>
+        /// NET_DVR_Init
+        /// </summary>
+        /// <returns></returns>
         public bool Initialize() => SdkHelper.InvokeSDK(() => NET_DVR_Init());
 
+        /// <summary>
+        /// NET_DVR_SetConnectTime
+        /// </summary>
+        /// <param name="waitTimeMilliseconds"></param>
+        /// <param name="tryTimes"></param>
+        /// <returns></returns>
         public bool SetConnectTime(uint waitTimeMilliseconds, uint tryTimes)
             => SdkHelper.InvokeSDK(() => NET_DVR_SetConnectTime(waitTimeMilliseconds, tryTimes)); // 2000 , 1
 
-
+        /// <summary>
+        /// NET_DVR_SetReconnect
+        /// </summary>
+        /// <param name="interval"></param>
+        /// <param name="enableRecon"></param>
+        /// <returns></returns>
         public bool SetReconnect(uint interval, int enableRecon)
             => SdkHelper.InvokeSDK(() => NET_DVR_SetReconnect(interval, enableRecon)); // 10000 , 1
-
 
         /// <summary>Setups the logs.</summary>
         /// <param name="logLevel">Log level. 0- close log(default), 1- output ERROR log only, 2- output ERROR and DEBUG log, 3- output all log, including ERROR, DEBUG and INFO log</param>
@@ -65,25 +93,45 @@ namespace Hik.Api
             return SdkHelper.InvokeSDK(() => NET_DVR_SetLogToFile(logLevel, logDirectory, autoDelete));
         }
 
+        /// <summary>
+        /// NET_DVR_Login_V30
+        /// </summary>
+        /// <param name="ipAddress">only ip addresess, host name not works</param>
+        /// <param name="port">default 8000</param>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns>session</returns>
         public Session Login(string ipAddress, int port, string userName, string password)
         {
             NET_DVR_DEVICEINFO_V30 deviceInfo = new NET_DVR_DEVICEINFO_V30();
             int userId = SdkHelper.InvokeSDK(() => NET_DVR_Login_V30(ipAddress, port, userName, password, ref deviceInfo));
 
-            var ipChannels = InfoIPChannel(userId, deviceInfo);
-            return new Session(userId, deviceInfo.byChanNum, ipChannels);
+            var channels = InfoIPChannel(userId, deviceInfo);
+            return new Session(userId, deviceInfo.byChanNum, channels.Item1, channels.Item2);
         }
 
+        /// <summary>
+        /// NET_DVR_Cleanup
+        /// </summary>
         public void Cleanup()
         {
             SdkHelper.InvokeSDK(() => NET_DVR_Cleanup());
         }
 
+        /// <summary>
+        /// NET_DVR_Logout
+        /// </summary>
+        /// <param name="userId"></param>
         public void Logout(int userId)
         {
             SdkHelper.InvokeSDK(() => NET_DVR_Logout(userId));
         }
 
+        /// <summary>
+        /// Get SD Card info, capaity, free space, status etc.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public HdInfo GetHddStatus(int userId)
         {
             NET_DVR_HDCFG hdConfig = default;
@@ -104,6 +152,11 @@ namespace Hik.Api
             return new HdInfo(hdConfig.struHDInfo[0]);
         }
 
+        /// <summary>
+        /// Get device current time
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public DateTime GetTime(int userId)
         {
             NET_DVR_TIME m_struTimeCfg = default;
@@ -122,6 +175,11 @@ namespace Hik.Api
             return m_struTimeCfg.ToDateTime();
         }
 
+        /// <summary>
+        /// Set device current time
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <param name="userId"></param>
         public void SetTime(DateTime dateTime, int userId)
         {
             NET_DVR_TIME m_struTimeCfg = new NET_DVR_TIME(dateTime);
@@ -133,6 +191,11 @@ namespace Hik.Api
             Marshal.FreeHGlobal(ptrTimeCfg);
         }
 
+        /// <summary>
+        /// Get Device Config
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public DeviceConfig GetDeviceConfig(int userId)
         {
             NET_DVR_DEVICECFG_V40 m_struDeviceCfg = default;
@@ -171,6 +234,11 @@ namespace Hik.Api
             return deviceConfig;
         }
 
+        /// <summary>
+        /// Get Network Config
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public NetworkConfig GetNetworkConfig(int userId)
         {
             NET_DVR_NETCFG_V30 m_struNetCfg = default;
@@ -203,14 +271,14 @@ namespace Hik.Api
         }
 
 
-        private List<IpChannel> InfoIPChannel(int userId, NET_DVR_DEVICEINFO_V30 deviceInfo)
+        private (List<IpChannel>, List<IpChannel>) InfoIPChannel(int userId, NET_DVR_DEVICEINFO_V30 deviceInfo)
         {
             var ipChannels = new List<IpChannel>();
+            var analogChannels = new List<IpChannel>();
 
-            var dwAnalogChannelTotalNumber = deviceInfo.byChanNum;
-            uint dwDigitalChannelTotalNumber = deviceInfo.byIPChanNum + 256 * (uint)deviceInfo.byHighDChanNum;
-
-            if (dwDigitalChannelTotalNumber > 0)
+            dwAChanTotalNum = (uint)deviceInfo.byChanNum;
+            dwDChanTotalNum = (uint)deviceInfo.byIPChanNum + 256 * (uint)deviceInfo.byHighDChanNum;
+            if (dwDChanTotalNum > 0)
             {
                 NET_DVR_IPPARACFG_V40 struIpParaCfgV40 = default;
 
@@ -228,41 +296,52 @@ namespace Hik.Api
                     // succ
                     struIpParaCfgV40 = (NET_DVR_IPPARACFG_V40)Marshal.PtrToStructure(ptrIpParaCfgV40, typeof(NET_DVR_IPPARACFG_V40));
 
-                    for (int i = 0; i < dwAnalogChannelTotalNumber; i++)
+                    for (int i = 0; i < dwAChanTotalNum; i++)
                     {
-                        var channel = ListAnalogChannel(i + 1, struIpParaCfgV40.byAnalogChanEnable[i]);
-                        ipChannels.Add(channel);
+                        var channelNumber = i + (int)deviceInfo.byStartChan;
+                        var channel = ListAnalogChannel(channelNumber, struIpParaCfgV40.byAnalogChanEnable[i]);
+                        analogChannels.Add(channel);
                     }
 
                     byte byStreamType;
                     uint iDChanNum = 64;
 
-                    if (dwDigitalChannelTotalNumber < 64)
+                    if (dwDChanTotalNum < 64)
                     {
                         //If the ip channels of device is less than 64,will get the real channel of device
-                        iDChanNum = dwDigitalChannelTotalNumber;
+                        iDChanNum = dwDChanTotalNum;
                     }
 
                     for (int i = 0; i < iDChanNum; i++)
                     {
                         byStreamType = struIpParaCfgV40.struStreamMode[i].byGetStreamType;
-                        var unionGetStream = struIpParaCfgV40.struStreamMode[i].uGetStream;
 
+                        dwSize = Marshal.SizeOf(struIpParaCfgV40.struStreamMode[i].uGetStream);
                         switch (byStreamType)
                         {
-                            //At present NVR just support case 0-one way to get stream from device
+                            //目前NVR仅支持直接从设备取流 NVR supports only the mode: get stream from device directly
                             case 0:
-                                dwSize = Marshal.SizeOf(unionGetStream);
                                 IntPtr ptrChanInfo = Marshal.AllocHGlobal(dwSize);
-                                Marshal.StructureToPtr(unionGetStream, ptrChanInfo, false);
-                                var struChanInfo = (NET_DVR_IPCHANINFO)Marshal.PtrToStructure(ptrChanInfo, typeof(NET_DVR_IPCHANINFO));
+                                Marshal.StructureToPtr(struIpParaCfgV40.struStreamMode[i].uGetStream, ptrChanInfo, false);
+                                struChanInfo = (NET_DVR_IPCHANINFO)Marshal.PtrToStructure(ptrChanInfo, typeof(NET_DVR_IPCHANINFO));
 
-                                //List ip channels
-                                int channel = i + (int)struIpParaCfgV40.dwStartDChan;
-                                ipChannels.Add(new IpChannel(channel, struChanInfo.byEnable, struChanInfo.byIPID) { Name = $"IP Channel {channel}" });
+                                //列出IP通道 List the IP channel
+                                var ipChannelNumber = struChanInfo.byIPID + struChanInfo.byIPIDHigh * 256 - iGroupNo * 64 - 1;
+                                ipChannels.Add(ListIPChannel(ipChannelNumber, struChanInfo.byEnable, struChanInfo.byIPID));
+
                                 Marshal.FreeHGlobal(ptrChanInfo);
                                 break;
+                            case 6:
+                                IntPtr ptrChanInfoV40 = Marshal.AllocHGlobal(dwSize);
+                                Marshal.StructureToPtr(struIpParaCfgV40.struStreamMode[i].uGetStream, ptrChanInfoV40, false);
+                                struChanInfoV40 = (NET_DVR_IPCHANINFO_V40)Marshal.PtrToStructure(ptrChanInfoV40, typeof(NET_DVR_IPCHANINFO_V40));
 
+                                //列出IP通道 List the IP channel
+                                var ipChannelNumberV40 = struChanInfoV40.wIPID - iGroupNo * 64 - 1;
+                                ipChannels.Add(ListIPChannel(ipChannelNumberV40, struChanInfoV40.byEnable, struChanInfoV40.wIPID));
+
+                                Marshal.FreeHGlobal(ptrChanInfoV40);
+                                break;
                             default:
                                 break;
                         }
@@ -270,14 +349,52 @@ namespace Hik.Api
                 }
                 Marshal.FreeHGlobal(ptrIpParaCfgV40);
             }
-            return ipChannels;
+            else
+            {
+                for (int i = 0; i < dwAChanTotalNum; i++)
+                {
+                    var channelNumber = i + deviceInfo.byStartChan;
+                    analogChannels.Add(ListAnalogChannel(channelNumber, 1));
+                }
+            }
+
+            return (ipChannels, analogChannels);
         }
 
-        public IpChannel ListAnalogChannel(int iChanNo, byte byEnable)
+        private IpChannel ListIPChannel(int iChanNo, byte byOnline, int byIPID)
         {
-            var str1 = string.Format("Camera {0}", iChanNo);
+            string str2;
 
-            return new IpChannel(iChanNo, byEnable, 0) { Name = str1 };//Add channels to list
+            if (byIPID == 0)
+            {
+                str2 = "X"; //the channel is idle
+            }
+            else
+            {
+                if (byOnline == 0)
+                {
+                    str2 = "offline"; //the channel is off-line
+                }
+                else
+                    str2 = "online"; //The channel is on-line
+            }
+
+            var str1 = String.Format("IPCamera {0} {1}", iChanNo, str2);
+            return new IpChannel(iChanNo, byOnline != 0, str1);
+        }
+        private IpChannel ListAnalogChannel(int iChanNo, byte byEnable)
+        {
+            string str2;
+            if (byEnable == 0)
+            {
+                str2 = "Disabled"; //This channel has been disabled
+            }
+            else
+            {
+                str2 = "Enabled"; //This channel has been enabled
+            }
+            var str1 = string.Format("Camera {0} {1}", iChanNo, str2);
+            return new IpChannel(iChanNo, byEnable != 0, str1);
         }
 
         [DllImport(HCNetSDK)]
@@ -305,7 +422,7 @@ namespace Hik.Api
         private static extern bool NET_DVR_GetDVRConfig(int lUserID, uint dwCommand, int lChannel, IntPtr lpOutBuffer, uint dwOutBufferSize, ref uint lpBytesReturned);
 
         [DllImport(HCNetSDK)]
-        public static extern bool NET_DVR_SetDVRConfig(int lUserID, uint dwCommand, int lChannel, IntPtr lpInBuffer, uint dwInBufferSize);
+        private static extern bool NET_DVR_SetDVRConfig(int lUserID, uint dwCommand, int lChannel, IntPtr lpInBuffer, uint dwInBufferSize);
 
     }
 }

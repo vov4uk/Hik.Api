@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Hik.Api.Struct.Video
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct NET_DVR_PREVIEWINFO
+    internal struct NET_DVR_PREVIEWINFO
     {
         public int lChannel;
         public uint dwStreamType; //0-main stream, 1-sub stream, 2-stream 3, 3-stream 4, and so on
