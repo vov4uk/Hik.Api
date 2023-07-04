@@ -10,6 +10,8 @@ namespace Hik.Api.Abstraction
 
         HikPhotoService PhotoService { get; }
 
+        PlaybackService PlaybackService { get; }
+
         bool Initialize();
 
         bool SetConnectTime(uint waitTimeMilliseconds, uint tryTimes);

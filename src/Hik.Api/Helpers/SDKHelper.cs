@@ -27,7 +27,7 @@ namespace Hik.Api.Helpers
             return new HikException(method, lastErrorCode);
         }
 
-        [DllImport(HikApi.DllPath)]
+        [DllImport(HikApi.HCNetSDK)]
         private static extern uint NET_DVR_GetLastError();
     }
 }

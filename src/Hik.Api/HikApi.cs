@@ -16,8 +16,10 @@ namespace Hik.Api
     {
         private HikVideoService videoService;
         private HikPhotoService pictureService;
+        private PlaybackService playbackService;
 
-        public const string DllPath = @"SDK\HCNetSDK.dll";
+        public const string HCNetSDK = @"SDK\HCNetSDK.dll";
+        public const string PlayCtrl = @"SDK\PlayCtrl.dll";
 
         public HikVideoService VideoService
         {
@@ -32,6 +34,14 @@ namespace Hik.Api
             get
             {
                 return pictureService ??= new HikPhotoService();
+            }
+        }
+
+        public PlaybackService PlaybackService
+        {
+            get
+            {
+                return playbackService ??= new PlaybackService();
             }
         }
 
@@ -270,31 +280,31 @@ namespace Hik.Api
             return new IpChannel(iChanNo, byEnable, 0) { Name = str1 };//Add channels to list
         }
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         private static extern bool NET_DVR_Init();
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         private static extern bool NET_DVR_SetLogToFile(int bLogEnable, string strLogDir, bool bAutoDel);
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         private static extern int NET_DVR_Login_V30(string sDVRIP, int wDVRPort, string sUserName, string sPassword, ref NET_DVR_DEVICEINFO_V30 lpDeviceInfo);
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         private static extern bool NET_DVR_Logout(int iUserID);
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         private static extern bool NET_DVR_Cleanup();
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         private static extern bool NET_DVR_SetConnectTime(uint dwWaitTime, uint dwTryTimes);
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         private static extern bool NET_DVR_SetReconnect(uint dwInterval, int bEnableRecon);
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         private static extern bool NET_DVR_GetDVRConfig(int lUserID, uint dwCommand, int lChannel, IntPtr lpOutBuffer, uint dwOutBufferSize, ref uint lpBytesReturned);
 
-        [DllImport(DllPath)]
+        [DllImport(HCNetSDK)]
         public static extern bool NET_DVR_SetDVRConfig(int lUserID, uint dwCommand, int lChannel, IntPtr lpInBuffer, uint dwInBufferSize);
 
     }

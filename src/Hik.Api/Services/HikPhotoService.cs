@@ -59,19 +59,19 @@ namespace Hik.Api.Services
             return SdkHelper.InvokeSDK(() => NET_DVR_FindPicture(userId, ref findConditions));
         }
 
-        [DllImport(HikApi.DllPath)]
+        [DllImport(HikApi.HCNetSDK)]
         private static extern int NET_DVR_FindPicture(int lUserID, ref NET_DVR_FIND_PICTURE_PARAM pFindParam);
 
-        [DllImport(HikApi.DllPath)]
+        [DllImport(HikApi.HCNetSDK)]
         private static extern int NET_DVR_FindNextPicture_V50(int lFindHandle, ref NET_DVR_FIND_PICTURE_V50 lpFindData);
 
-        [DllImport(HikApi.DllPath)]
+        [DllImport(HikApi.HCNetSDK)]
         private static extern bool NET_DVR_CloseFindPicture(int lpFindHandle);
 
-        [DllImport(HikApi.DllPath)]
+        [DllImport(HikApi.HCNetSDK)]
         private static extern bool NET_DVR_GetPicture_V50(int lUserID, ref NET_DVR_PIC_PARAM lpPicParam);
 
-        [DllImport(HikApi.DllPath)]
+        [DllImport(HikApi.HCNetSDK)]
         private static extern bool NET_DVR_GetPicture(int lUserID, string sDVRFileName, [In] [MarshalAs(UnmanagedType.LPStr)] string sSavedFileName);
     }
 }

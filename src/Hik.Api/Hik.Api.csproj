@@ -12,9 +12,9 @@
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Simple wrapper over Hikvision SDK, with minimum functionality. Login, fetch files list, download files, and log out.</Description>
-    <AssemblyVersion>1.0.14.1</AssemblyVersion>
-    <FileVersion>1.0.14.1</FileVersion>
-    <Version>1.0.14.1</Version>
+    <AssemblyVersion>1.0.14.2</AssemblyVersion>
+    <FileVersion>1.0.14.2</FileVersion>
+    <Version>1.0.14.2</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NoWarn>NU5100</NoWarn>
   </PropertyGroup>
