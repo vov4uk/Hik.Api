@@ -107,7 +107,7 @@ namespace Hik.Api
             int userId = SdkHelper.InvokeSDK(() => NET_DVR_Login_V30(ipAddress, port, userName, password, ref deviceInfo));
 
             var channels = InfoIPChannel(userId, deviceInfo);
-            return new Session(userId, deviceInfo.byChanNum, channels.Item1, channels.Item2);
+            return new Session(userId, deviceInfo.byChanNum, channels);
         }
 
         /// <summary>
@@ -271,10 +271,9 @@ namespace Hik.Api
         }
 
 
-        private (List<IpChannel>, List<IpChannel>) InfoIPChannel(int userId, NET_DVR_DEVICEINFO_V30 deviceInfo)
+        private List<IpChannel> InfoIPChannel(int userId, NET_DVR_DEVICEINFO_V30 deviceInfo)
         {
             var ipChannels = new List<IpChannel>();
-            var analogChannels = new List<IpChannel>();
 
             dwAChanTotalNum = (uint)deviceInfo.byChanNum;
             dwDChanTotalNum = (uint)deviceInfo.byIPChanNum + 256 * (uint)deviceInfo.byHighDChanNum;
@@ -300,7 +299,7 @@ namespace Hik.Api
                     {
                         var channelNumber = i + (int)deviceInfo.byStartChan;
                         var channel = ListAnalogChannel(channelNumber, struIpParaCfgV40.byAnalogChanEnable[i]);
-                        analogChannels.Add(channel);
+                        ipChannels.Add(channel);
                     }
 
                     byte byStreamType;
@@ -354,11 +353,11 @@ namespace Hik.Api
                 for (int i = 0; i < dwAChanTotalNum; i++)
                 {
                     var channelNumber = i + deviceInfo.byStartChan;
-                    analogChannels.Add(ListAnalogChannel(channelNumber, 1));
+                    ipChannels.Add(ListAnalogChannel(channelNumber, 1));
                 }
             }
 
-            return (ipChannels, analogChannels);
+            return ipChannels;
         }
 
         private IpChannel ListIPChannel(int iChanNo, byte byOnline, int byIPID)
@@ -423,6 +422,5 @@ namespace Hik.Api
 
         [DllImport(HCNetSDK)]
         private static extern bool NET_DVR_SetDVRConfig(int lUserID, uint dwCommand, int lChannel, IntPtr lpInBuffer, uint dwInBufferSize);
-
     }
 }

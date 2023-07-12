@@ -15,11 +15,10 @@ namespace Hik.Api.Data
         /// <param name="userId">The user identifier.</param>
         /// <param name="channelNumber">The channel number.</param>
         /// <param name="ipChannels">The ip channels.</param>
-        /// <param name="analogChannels">The analog channels.</param>
-        public Session(int userId, byte channelNumber, IReadOnlyCollection<IpChannel> ipChannels, IReadOnlyCollection<IpChannel> analogChannels)
+        public Session(int userId, byte channelNumber, IReadOnlyCollection<IpChannel> ipChannels)
         {
             UserId = userId;
-            Device = new DeviceInfo(channelNumber, ipChannels, analogChannels);
+            Device = new DeviceInfo(channelNumber, ipChannels);
         }
 
         /// <summary>

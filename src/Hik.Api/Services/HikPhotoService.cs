@@ -1,4 +1,5 @@
 ﻿using Hik.Api.Abstraction;
+using Hik.Api.Data;
 using Hik.Api.Helpers;
 using Hik.Api.Struct;
 using Hik.Api.Struct.Photo;
@@ -38,6 +39,17 @@ namespace Hik.Api.Services
 
                 Marshal.FreeHGlobal(temp.pSavedFileBuf);
             }
+        }
+
+        /// <summary>
+        /// Download File
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="photo"></param>
+        /// <param name="destinationPath"></param>
+        public virtual void DownloadFile(int userId, HikRemoteFile photo, string destinationPath)
+        {
+            DownloadFile(userId, photo.Name, photo.Size, destinationPath);
         }
 
         /// <summary>Stops the find.</summary>

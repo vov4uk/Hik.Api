@@ -11,7 +11,7 @@ namespace Hik.Api.Services
     public class PlaybackService
     {
         /// <summary>
-        /// Start live preview with callback, all receiver live data will be handled by PictureBox Handle
+        /// Start live preview without callback, all receiver live data will be handled by PictureBox Handle
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="channel"></param>
