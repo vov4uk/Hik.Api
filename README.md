@@ -1,6 +1,6 @@
 # Hik.Api
 * Avaliable as [nuget](https://www.nuget.org/packages/Hik.Api/) 
-* `dotnet add package Hik.Api --version 1.0.13`
+* `dotnet add package Hik.Api --version 1.0.14`
 
 * [![NuGet Downloads](https://img.shields.io/nuget/dt/Hik.Api.svg)](https://www.nuget.org/packages/Hik.Api/)
 
@@ -23,7 +23,7 @@ var session = hikApi.Login("192.168.1.64", 8000, "admin", "pass");
 ```
 
 > **Warning**:
-> **session.UserId** Almost every method requires UserId.
+> Almost every method requires **session.UserId**.
 > I'm going to remove this parameter in future versions of package.
 
 Logout
