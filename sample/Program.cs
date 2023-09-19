@@ -50,7 +50,7 @@ namespace ConsoleApp
                     Console.WriteLine($"Found {session.Device.IpChannels} IpChannels");
                     foreach (var channel in session.Device.IpChannels)
                     {
-                        Console.WriteLine($"IP Channel {channel.ChannelNumber}; IsOnline : {channel.IsOnline}; IsEmpty : {channel.IsEmpty}");
+                        Console.WriteLine($"IP Channel {channel.ChannelNumber}; IsOnline : {channel.IsOnline};");
                         if (channel.IsOnline)
                         {
                             var videos = await hikApi.VideoService.FindFilesAsync(DateTime.Now.AddHours(-4), DateTime.Now, session, channel.ChannelNumber);

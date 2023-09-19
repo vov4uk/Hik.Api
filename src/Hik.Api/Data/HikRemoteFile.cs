@@ -4,7 +4,10 @@ using System;
 
 namespace Hik.Api.Data
 {
-    public class HikRemoteFile 
+    /// <summary>
+    ///  Remote file from camera
+    /// </summary>
+    public class HikRemoteFile
     {
         internal HikRemoteFile(NET_DVR_FIND_PICTURE_V50 findData)
         {
@@ -21,16 +24,33 @@ namespace Hik.Api.Data
             this.Size = findData.dwFileSize;
         }
 
+        /// <summary>Initializes a new instance of the <see cref="HikRemoteFile" /> class.</summary>
         public HikRemoteFile()
         {
         }
 
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
         public string Name { get; set; }
 
+        /// <summary>Gets or sets the date.</summary>
+        /// <value>The date.</value>
         public DateTime Date { get; set; }
 
+        /// <summary>
+        /// Gets or sets the duration.
+        /// </summary>
+        /// <value>
+        /// The duration.
+        /// </value>
         public int Duration { get; set; }
 
+        /// <summary>
+        /// Gets or sets the size.
+        /// </summary>
+        /// <value>
+        /// The size.
+        /// </value>
         public long Size { get; set; }
     }
 }

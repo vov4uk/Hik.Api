@@ -5,8 +5,12 @@ using Hik.Api.Struct.Config;
 
 namespace Hik.Api.Data
 {
+    /// <summary>
+    ///  Hard drive information
+    /// </summary>
     public class HdInfo
     {
+        /// <summary>Initializes a new instance of the <see cref="HdInfo" /> class.</summary>
         public HdInfo() { }
         internal HdInfo(NET_DVR_SINGLE_HD hd)
         {
@@ -20,17 +24,37 @@ namespace Hik.Api.Data
             FreePictureSpace = hd.dwFreePictureSpace;
         }
 
+        /// <summary>Gets a value indicating whether this instance is error status.</summary>
+        /// <value>
+        ///   <c>true</c> if this instance is error status; otherwise, <c>false</c>.</value>
         public bool IsErrorStatus => HdStatus == 2;
-
+        /// <summary>Gets or sets the capacity.</summary>
+        /// <value>The capacity.</value>
         public uint Capacity { get; set; }
+        /// <summary>Gets or sets the free space.</summary>
+        /// <value>The free space.</value>
         public uint FreeSpace { get; set; }
+        /// <summary>Gets or sets the hd status.</summary>
+        /// <value>The hd status.</value>
         public uint HdStatus { get; set; }
+        /// <summary>Gets or sets the hd attribute.</summary>
+        /// <value>The hd attribute.</value>
         public byte HDAttr { get; set; }
+        /// <summary>Gets or sets the type of the hd.</summary>
+        /// <value>The type of the hd.</value>
         public byte HDType { get; set; }
+        /// <summary>Gets or sets the recycling.</summary>
+        /// <value>The recycling.</value>
         public byte Recycling { get; set; }
+        /// <summary>Gets or sets the picture capacity.</summary>
+        /// <value>The picture capacity.</value>
         public uint PictureCapacity { get; set; }
+        /// <summary>Gets or sets the free picture space.</summary>
+        /// <value>The free picture space.</value>
         public uint FreePictureSpace { get; set; }
 
+        /// <summary>Converts to string.</summary>
+        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
 

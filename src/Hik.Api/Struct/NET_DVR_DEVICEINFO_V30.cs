@@ -7,9 +7,8 @@ namespace Hik.Api.Struct
     [StructLayout(LayoutKind.Sequential)]
     internal struct NET_DVR_DEVICEINFO_V30
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = HikConst.SERIALNO_LEN, ArraySubType = UnmanagedType.I1)]
+        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = HikConst.SERIALNO_LEN, ArraySubType = UnmanagedType.I1)]
         public byte[] sSerialNumber;
-
         public byte byAlarmInPortNum;
         public byte byAlarmOutPortNum;
         public byte byDiskNum;
@@ -24,16 +23,16 @@ namespace Hik.Api.Struct
         public byte bySupport;
         public byte bySupport1;
         public byte bySupport2;
+        public ushort wDevType;
         public byte bySupport3;
+
         public byte byMultiStreamProto;
         public byte byStartDChan;
         public byte byStartDTalkChan;
         public byte byHighDChanNum;
         public byte bySupport4;
         public byte byLanguageType;
-        public ushort wDevType;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9, ArraySubType = UnmanagedType.I1)]
+        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 9, ArraySubType = UnmanagedType.I1)]
         public byte[] byRes2;
     }
 }
