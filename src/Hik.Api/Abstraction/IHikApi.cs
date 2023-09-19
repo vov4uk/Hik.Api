@@ -9,16 +9,31 @@ namespace Hik.Api.Abstraction
     /// </summary>
     public interface IHikApi
     {
-        /// <summary>Gets the video service.</summary>
-        /// <value>The video service.</value>
+
+        /// <summary>
+        /// Gets the video service.
+        /// </summary>
+        /// <value>
+        /// The video service.
+        /// </value>
         HikVideoService VideoService { get; }
 
-        /// <summary>Gets the photo service.</summary>
-        /// <value>The photo service.</value>
+
+        /// <summary>
+        /// Gets the photo service.
+        /// </summary>
+        /// <value>
+        /// The photo service.
+        /// </value>
         HikPhotoService PhotoService { get; }
 
-        /// <summary>Gets the playback service.</summary>
-        /// <value>The playback service.</value>
+
+        /// <summary>
+        /// Gets the playback service.
+        /// </summary>
+        /// <value>
+        /// The playback service.
+        /// </value>
         PlaybackService PlaybackService { get; }
 
         /// <summary>Initializes this instance.</summary>
@@ -35,7 +50,9 @@ namespace Hik.Api.Abstraction
         /// </returns>
         bool SetConnectTime(uint waitTimeMilliseconds, uint tryTimes);
 
-        /// <summary>Sets the reconnect.</summary>
+        /// <summary>
+        /// Sets the reconnect.
+        /// </summary>
         /// <param name="interval">The interval.</param>
         /// <param name="enableRecon">The enable recon.</param>
         /// <returns>
@@ -43,7 +60,9 @@ namespace Hik.Api.Abstraction
         /// </returns>
         bool SetReconnect(uint interval, int enableRecon);
 
-        /// <summary>Setups the logs.</summary>
+        /// <summary>
+        /// Setups the logs.
+        /// </summary>
         /// <param name="logLevel">The log level.</param>
         /// <param name="logDirectory">The log directory.</param>
         /// <param name="autoDelete">if set to <c>true</c> [automatic delete].</param>
@@ -52,7 +71,9 @@ namespace Hik.Api.Abstraction
         /// </returns>
         bool SetupLogs(int logLevel, string logDirectory, bool autoDelete);
 
-        /// <summary>Logins the specified ip address.</summary>
+        /// <summary>
+        /// Logins the specified ip address.
+        /// </summary>
         /// <param name="ipAddress">The ip address.</param>
         /// <param name="port">The port.</param>
         /// <param name="userName">Name of the user.</param>
@@ -62,24 +83,33 @@ namespace Hik.Api.Abstraction
         /// </returns>
         Session Login(string ipAddress, int port, string userName, string password);
 
-        /// <summary>Gets the HDD status.</summary>
+        /// <summary>
+        /// Get SD Card info, capaity, free space, status etc.
+        /// </summary>
         /// <param name="userId">The user identifier.</param>
+        /// <param name="ipChannel">The ip channel.</param>
         /// <returns>
         ///   <br />
         /// </returns>
-        HdInfo GetHddStatus(int userId);
+        HdInfo GetHddStatus(int userId, int ipChannel = -1);
 
-        /// <summary>Gets the time.</summary>
+        /// <summary>
+        /// Gets the time.
+        /// </summary>
         /// <param name="userId">The user identifier.</param>
+        /// <param name="ipChannel">The ip channel.</param>
         /// <returns>
         ///   <br />
         /// </returns>
-        DateTime GetTime(int userId);
+        DateTime GetTime(int userId, int ipChannel = -1);
 
-        /// <summary>Sets the time.</summary>
+        /// <summary>
+        /// Sets the time.
+        /// </summary>
         /// <param name="dateTime">The date time.</param>
         /// <param name="userId">The user identifier.</param>
-        void SetTime(DateTime dateTime, int userId);
+        /// <param name="ipChannel">The ip channel.</param>
+        void SetTime(DateTime dateTime, int userId, int ipChannel = -1);
 
         /// <summary>Gets the device configuration.</summary>
         /// <param name="userId">The user identifier.</param>

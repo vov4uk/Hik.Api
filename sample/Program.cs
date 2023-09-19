@@ -1,60 +1,106 @@
 ﻿using Hik.Api;
 using Hik.Api.Abstraction;
-using Hik.Api.Data;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
     internal class Program
     {
-        private static IHikApi hikApi = new HikApi();
-        private static int playbackId;
-        private static string playbackFileName;
-        private static Session session;
-        private static List<byte[]> bytes = new List<byte[]>();
-        private static int currentFragmentLenght = 0;
-
-        private static int maxFileSizeMb = 10;
-
         static async Task Main(string[] args)
         {
             try
             {
-
                 Console.WriteLine("App started");
                 Directory.CreateDirectory("Videos");
                 Directory.CreateDirectory("Photos");
- 
+                IHikApi hikApi = new HikApi();
                 hikApi.Initialize();
                 hikApi.SetupLogs(3, "C:\\sdkLogsPath", false);
                 hikApi.SetConnectTime(2000, 1);
                 hikApi.SetReconnect(10000, 1);
 
                 // Please update IP Address, port and user credentials
-                session = hikApi.Login("192.168.1.68", 8000, "test", "password_1");
+                var session = hikApi.Login("192.168.1.64", 8000, "admin", "password");
                 Console.WriteLine("Login success");
 
                 // Get Camera time
                 var cameraTime = hikApi.GetTime(session.UserId);
                 Console.WriteLine($"Camera time :{cameraTime}");
-
-                playbackId = hikApi.PlaybackService.StartPlayBack(session.UserId, session.Device.DefaultIpChannel);
-
-
-                //using (Timer timer = new Timer((o) => DownloadCallback(), null, 0, 15000))
+                var currentTime = DateTime.Now;
+                if (Math.Abs((currentTime - cameraTime).TotalSeconds) > 5)
                 {
-                    Console.WriteLine("Press \'q\' to quit");
-                    while (Console.ReadKey() != new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false))
+                    hikApi.SetTime(currentTime, session.UserId);
+                }
+
+                // GetNetworkConfig
+                var network = hikApi.GetNetworkConfig(session.UserId);
+                Console.WriteLine(JsonConvert.SerializeObject(network, Formatting.Indented));
+
+                // GetDeviceConfig
+                var device = hikApi.GetDeviceConfig(session.UserId);
+                Console.WriteLine(JsonConvert.SerializeObject(device, Formatting.Indented));
+
+                // For NVR
+                if (session.Device.IpChannels.Any())
+                {
+                    Console.WriteLine($"Found {session.Device.IpChannels} IpChannels");
+                    foreach (var channel in session.Device.IpChannels)
                     {
-                        // do nothing
+                        Console.WriteLine($"IP Channel {channel.ChannelNumber}; IsOnline : {channel.IsOnline};");
+                        if (channel.IsOnline)
+                        {
+                            var videos = await hikApi.VideoService.FindFilesAsync(DateTime.Now.AddHours(-4), DateTime.Now, session, channel.ChannelNumber);
+                            Console.WriteLine($"Found {videos.Count} videos");
+                            foreach (var video in videos)
+                            {
+                                Console.WriteLine(video.Name);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    //Get photos files for last 2 hours
+                    var photos = await hikApi.PhotoService.FindFilesAsync(DateTime.Now.AddHours(-2), DateTime.Now, session);
+                    Console.WriteLine($"Found {photos.Count} photos");
+                    foreach (var photo in photos)
+                    {
+                        var destinationPath = Path.Combine(Environment.CurrentDirectory, "Photos", photo.Name + ".jpg");
+                        hikApi.PhotoService.DownloadFile(session.UserId, photo.Name, photo.Size, destinationPath);
+                        Console.WriteLine($"Photo saved to {destinationPath}");
                     }
 
+                    //Get video files for last 4 hours
+                    var videos = await hikApi.VideoService.FindFilesAsync(DateTime.Now.AddHours(-4), DateTime.Now, session);
+                    Console.WriteLine($"Found {videos.Count} videos");
+                    foreach (var video in videos)
+                    {
+                        var destinationPath = Path.Combine(Environment.CurrentDirectory, "Videos", video.Name + ".mp4");
+                        var downloadId = hikApi.VideoService.StartDownloadFile(session.UserId, video.Name, destinationPath);
+                        Console.WriteLine($"Downloding {destinationPath}");
+                        do
+                        {
+                            await Task.Delay(5000);
+                            int downloadProgress = hikApi.VideoService.GetDownloadPosition(downloadId);
+                            Console.WriteLine($"Downloding {downloadProgress} %");
+                            if (downloadProgress == 100)
+                            {
+                                hikApi.VideoService.StopDownloadFile(downloadId);
+                                break;
+                            }
+                            else if (downloadProgress < 0 || downloadProgress > 100)
+                            {
+                                throw new InvalidOperationException($"UpdateDownloadProgress failed, progress value = {downloadProgress}");
+                            }
+                        }
+                        while (true);
+                        Console.WriteLine($"Downloaded {destinationPath}");
+                    }
                 }
-                //hikApi.VideoService.StopRecording(playbackId);
-                hikApi.PlaybackService.StopPlayBack(playbackId);
 
                 hikApi.Logout(session.UserId);
                 hikApi.Cleanup();
@@ -70,41 +116,6 @@ namespace ConsoleApp
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        private static void DownloadCallback()
-        {
-            DateTime start = DateTime.Now;
-            var filename = $"{start:yyyyMMdd_HHmmss}.mp4";
-            if (playbackId == 0)
-            {
-                playbackId = hikApi.PlaybackService.StartPlayBack(session.UserId, session.Device.DefaultIpChannel);
-                hikApi.PlaybackService.StartRecording(playbackId, filename, session.UserId, session.Device.DefaultIpChannel);
-                playbackFileName = filename;
-            }
-            else
-            {
-                FileInfo file = new FileInfo(playbackFileName);
-                var filesize = file.Length / (1024.0 * 1024.0);
-                Console.WriteLine("File size {0} mb", filesize);
-                if (filesize > maxFileSizeMb)
-                {
-                    bool playbackStoped = hikApi.PlaybackService.StopRecording(playbackId);
-                    if (playbackStoped)
-                    {
-                        Console.WriteLine("Stop recording");
-                    }
-
-                    bool playbackStarted = hikApi.PlaybackService.StartRecording(playbackId, filename, session.UserId, session.Device.DefaultIpChannel);
-                    playbackFileName = filename;
-                    if (playbackStarted)
-                    {
-                        Console.WriteLine("Start recording");
-                    }
-
-                    playbackFileName = filename;
-                }
             }
         }
     }

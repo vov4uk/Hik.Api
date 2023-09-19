@@ -75,7 +75,7 @@ hikApi.SetTime(currentTime, session.UserId);
 
 # Photo service
 
-Get photos list from IP Camera (default IP channel)
+Get photos list from IP Camera (default IP channel). Returns IReadOnlyCollection<[HikRemoteFile](https://github.com/vov4uk/Hik.Api/blob/main/src/Hik.Api/Data/HikRemoteFile.cs)>
 ```cs
 //Get photos files for last 24 hours
 DateTime fromPeriod = DateTime.Now.AddHours(-24);
@@ -83,7 +83,7 @@ DateTime toPeriod = DateTime.Now;
 var photos = await hikApi.PhotoService.FindFilesAsync(fromPeriod, toPeriod, session);
 ```
 
-Get photos list from specific IP channel. Returns IReadOnlyCollection<[HikRemoteFile](https://github.com/vov4uk/Hik.Api/blob/main/src/Hik.Api/Data/HikRemoteFile.cs)>
+Get photos list from specific IP channel.
 ```cs
 int channel = 2;
 var photos = await hikApi.PhotoService.FindFilesAsync(fromPeriod, toPeriod, session, channel);
@@ -177,4 +177,3 @@ Stop real play
 ```cs
 hikApi.PlaybackService.StopPlayBack(playbackId);
 ```
-

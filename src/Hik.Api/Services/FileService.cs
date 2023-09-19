@@ -13,11 +13,11 @@ namespace Hik.Api.Services
     public abstract class FileService
     {
         /// <summary>
-        /// Get files list for defailt IP channel
+        /// Finds the files asynchronous.
         /// </summary>
-        /// <param name="periodStart"></param>
-        /// <param name="periodEnd"></param>
-        /// <param name="session"></param>
+        /// <param name="periodStart">The period start.</param>
+        /// <param name="periodEnd">The period end.</param>
+        /// <param name="session">The session.</param>
         /// <returns></returns>
         public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session)
         {
@@ -27,10 +27,10 @@ namespace Hik.Api.Services
         /// <summary>
         /// Get files list for specific channel
         /// </summary>
-        /// <param name="periodStart"></param>
-        /// <param name="periodEnd"></param>
-        /// <param name="session"></param>
-        /// <param name="ipChannel"></param>
+        /// <param name="periodStart">The period start.</param>
+        /// <param name="periodEnd">The period end.</param>
+        /// <param name="session">The session.</param>
+        /// <param name="ipChannel">The ip channel.</param>
         /// <returns></returns>
         public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session, int ipChannel)
         {
@@ -51,9 +51,15 @@ namespace Hik.Api.Services
         /// Stops the find.
         /// </summary>
         /// <param name="findId">The find identifier.</param>
-        /// <returns></returns>
+        /// <returns>Success</returns>
         protected abstract bool StopFind(int findId);
 
+        /// <summary>
+        /// Finds the next.
+        /// </summary>
+        /// <param name="findId">The find identifier.</param>
+        /// <param name="source">The source.</param>
+        /// <returns>Success</returns>
         internal abstract int FindNext(int findId, ref ISourceFile source);
 
 

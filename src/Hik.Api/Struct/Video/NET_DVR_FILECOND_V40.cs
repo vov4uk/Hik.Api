@@ -8,7 +8,7 @@ namespace Hik.Api.Struct.Video
     internal struct NET_DVR_FILECOND_V40
     {
         public int lChannel;
-        public uint dwFileType;
+        public uint dwFileType; //0xff-All，0-Timing record，1-Motion detection，2-Alarm trigger，...
 
         public uint dwIsLocked; //Is it locked: 0-unlocked file, 1-locked file, 0xff means all files (including locked and unlocked)
 
