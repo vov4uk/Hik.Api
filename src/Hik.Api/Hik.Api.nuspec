@@ -14,6 +14,7 @@
     <copyright>$copyright$</copyright>
     <tags>Hikvision, SDK, ipcamera, photo, video</tags>
     <icon>images\logo.png</icon>
+    <readme>docs\README.md</readme>
     <contentFiles>
       <!-- this sets "CopyIfNewer" on all files in the project that references this package -->
       <files include="**/*" buildAction="None" copyToOutput="true"/>
@@ -24,6 +25,7 @@
   </metadata>
   <files>
     <file src="..\..\logo.png" target="images\" />
+    <file src="..\..\README.md" target="docs\" />
     <file src="bin\$configuration$\netstandard2.1\HikvisionSDK\*.*" target="contentFiles\any\any\HikvisionSDK"/>
     <file src="bin\$configuration$\netstandard2.1\HikvisionSDK\HCNetSDKCom\*.*" target="contentFiles\any\any\HikvisionSDK\HCNetSDKCom\"/>
   </files>
