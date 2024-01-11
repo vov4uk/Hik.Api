@@ -3,9 +3,9 @@
 namespace Hik.Api.Helpers
 {
     /// <summary>
-    /// Hik Remote File Extentions
+    /// Hik Remote File Extensions
     /// </summary>
-    public static class HikRemoteFileExtentions
+    public static class HikRemoteFileExtensions
     {
         private const string StartDateTimePrintFormat = "yyyy.MM.dd HH:mm:ss";
         private const string DateFormat = "yyyyMMdd_HHmmss";

@@ -29,12 +29,20 @@ namespace Hik.Api.Data
         {
         }
 
-        /// <summary>Gets or sets the name.</summary>
-        /// <value>The name.</value>
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
         public string Name { get; set; }
 
-        /// <summary>Gets or sets the date.</summary>
-        /// <value>The date.</value>
+        /// <summary>
+        /// Gets or sets the date.
+        /// </summary>
+        /// <value>
+        /// The date.
+        /// </value>
         public DateTime Date { get; set; }
 
         /// <summary>

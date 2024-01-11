@@ -10,18 +10,31 @@ namespace Hik.Api.Services
     /// <summary>
     /// Base class to download files
     /// </summary>
-    public abstract class FileService
+    public abstract class FileService : IFileService
     {
+        /// <summary>
+        /// session
+        /// </summary>
+        protected readonly IHikApi session;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileService"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        public FileService(IHikApi session)
+        {
+            this.session = session;
+        }
+
         /// <summary>
         /// Finds the files asynchronous.
         /// </summary>
         /// <param name="periodStart">The period start.</param>
         /// <param name="periodEnd">The period end.</param>
-        /// <param name="session">The session.</param>
         /// <returns></returns>
-        public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session)
+        public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd)
         {
-            return FindFiles(periodStart, periodEnd, session, session.Device.DefaultIpChannel);
+            return FindFiles(periodStart, periodEnd, session.DefaultIpChannel);
         }
 
         /// <summary>
@@ -29,23 +42,21 @@ namespace Hik.Api.Services
         /// </summary>
         /// <param name="periodStart">The period start.</param>
         /// <param name="periodEnd">The period end.</param>
-        /// <param name="session">The session.</param>
         /// <param name="ipChannel">The ip channel.</param>
         /// <returns></returns>
-        public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, Session session, int ipChannel)
+        public virtual Task<IReadOnlyCollection<HikRemoteFile>> FindFilesAsync(DateTime periodStart, DateTime periodEnd, int ipChannel)
         {
-            return FindFiles(periodStart, periodEnd, session, ipChannel);
+            return FindFiles(periodStart, periodEnd, ipChannel);
         }
 
         /// <summary>
         /// Starts the find.
         /// </summary>
-        /// <param name="userId">The user identifier.</param>
         /// <param name="periodStart">The period start.</param>
         /// <param name="periodEnd">The period end.</param>
         /// <param name="channel">The channel.</param>
         /// <returns></returns>
-        protected abstract int StartFind(int userId, DateTime periodStart, DateTime periodEnd, int channel);
+        protected abstract int StartFind(DateTime periodStart, DateTime periodEnd, int channel);
 
         /// <summary>
         /// Stops the find.
@@ -61,7 +72,6 @@ namespace Hik.Api.Services
         /// <param name="source">The source.</param>
         /// <returns>Success</returns>
         internal abstract int FindNext(int findId, ref ISourceFile source);
-
 
         /// <summary>
         /// Gets the find results.
@@ -93,9 +103,9 @@ namespace Hik.Api.Services
             return results;
         }
 
-        private async Task<IReadOnlyCollection<HikRemoteFile>> FindFiles(DateTime periodStart, DateTime periodEnd, Session session, int ipChannel)
+        private async Task<IReadOnlyCollection<HikRemoteFile>> FindFiles(DateTime periodStart, DateTime periodEnd, int ipChannel)
         {
-            int findId = this.StartFind(session.UserId, periodStart, periodEnd, ipChannel);
+            int findId = this.StartFind(periodStart, periodEnd, ipChannel);
 
             IEnumerable<HikRemoteFile> results = await this.GetFindResults(findId);
 

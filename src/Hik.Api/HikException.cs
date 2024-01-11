@@ -1,8 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 
 namespace Hik.Api
@@ -16,29 +13,33 @@ namespace Hik.Api
     public class HikException : Exception
     {
         /// <summary>
-        /// Gets the error code.
-        /// </summary>
-        /// <value>
-        /// The error code.
-        /// </value>
-        public uint ErrorCode { get; }
-        /// <summary>
         /// Gets the error message.
         /// </summary>
         /// <value>
         /// The error message.
         /// </value>
-        public string ErrorMessage { get { return GetEnumDescription((HikError)ErrorCode); } }
+        public string ErrorMessage { get; } = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HikException"/> class.
         /// </summary>
         /// <param name="method">The method.</param>
-        /// <param name="errorCode">The error code.</param>
-        public HikException(string method, uint errorCode)
+        /// <param name="error">The error.</param>
+        public HikException(string method, string error)
             : base(method)
         {
-            ErrorCode = errorCode;
+            ErrorMessage = error;
+        }
+
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return $"{ErrorMessage}{Environment.NewLine}{base.ToString()}";
         }
 
         /// <summary>
@@ -49,19 +50,6 @@ namespace Hik.Api
         protected HikException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-        }
-
-        private static string GetEnumDescription(HikError value)
-        {
-            string val = value.ToString();
-            FieldInfo fi = value.GetType().GetField(val);
-
-            if (fi != null && fi.GetCustomAttributes(typeof(DescriptionAttribute), false) is DescriptionAttribute[] attributes && attributes.Any())
-            {
-                return attributes.First().Description;
-            }
-
-            return val;
         }
     }
 }

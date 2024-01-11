@@ -10,18 +10,23 @@ namespace Hik.Api.Services
     /// <summary>
     /// Video service
     /// </summary>
-    public class HikVideoService : FileService
+    public class VideoService : FileService, IVideoService
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VideoService"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        public VideoService(IHikApi session): base(session) { }
+
         /// <summary>
         /// Start download File
         /// </summary>
-        /// <param name="userId">User identifier</param>
         /// <param name="sourceFile">Hik remote file name</param>
         /// <param name="destinationPath">Save path</param>
         /// <returns>Download handler</returns>
-        public virtual int StartDownloadFile(int userId, string sourceFile, string destinationPath)
+        public virtual int StartDownloadFile(string sourceFile, string destinationPath)
         {
-            int downloadHandle = SdkHelper.InvokeSDK(() => NET_DVR_GetFileByName(userId, sourceFile, destinationPath));
+            int downloadHandle = SdkHelper.InvokeSDK(() => NET_DVR_GetFileByName(session.UserId, sourceFile, destinationPath));
 
             uint iOutValue = 0;
             SdkHelper.InvokeSDK(() => NET_DVR_PlayBackControl_V40(downloadHandle, HikConst.NET_DVR_PLAYSTART, IntPtr.Zero, 0, IntPtr.Zero, ref iOutValue));
@@ -63,12 +68,11 @@ namespace Hik.Api.Services
         }
 
         /// <summary>Starts the find.</summary>
-        /// <param name="userId">The user identifier.</param>
         /// <param name="periodStart">The period start.</param>
         /// <param name="periodEnd">The period end.</param>
         /// <param name="channel">The channel.</param>
         /// <returns>Download handler </returns>
-        protected override int StartFind(int userId, DateTime periodStart, DateTime periodEnd, int channel)
+        protected override int StartFind(DateTime periodStart, DateTime periodEnd, int channel)
         {
             NET_DVR_FILECOND_V40 findConditions = new NET_DVR_FILECOND_V40
             {
@@ -79,13 +83,15 @@ namespace Hik.Api.Services
                 struStopTime = new NET_DVR_TIME(periodEnd),
             };
 
-            return SdkHelper.InvokeSDK(() => NET_DVR_FindFile_V40(userId, ref findConditions));
+            return SdkHelper.InvokeSDK(() => NET_DVR_FindFile_V40(session.UserId, ref findConditions));
         }
 
         /// <summary>Close the file search and release resources.</summary>
         /// <param name="findId">The find identifier.</param>
         /// <returns>TRUE means success, FALSE means failure.</returns>
         protected override bool StopFind(int findId) => SdkHelper.InvokeSDK(() => NET_DVR_FindClose_V30(findId));
+
+        #region SDK
 
         /// <summary>
         /// This API is used to close file search and release the resource.
@@ -156,5 +162,7 @@ namespace Hik.Api.Services
         /// <returns>TRUE means success, FALSE means failure.</returns>
         [DllImport(HikApi.HCNetSDK)]
         private static extern bool NET_DVR_StopGetFile(int lFileHandle);
+
+        #endregion
     }
 }

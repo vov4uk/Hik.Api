@@ -11,11 +11,12 @@
     <RepositoryUrl>https://github.com/vov4uk/Hik.Api.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>Wrapper over Hikvision SDK version 5.3.6.30 x64. It allows login, fetch files list (videos and photos), download files, get config list and more.</Description>
+    <Description>Wrapper over Hikvision NetSDK (v5.3.6.30 win-x64). It allows login, fetch files list (videos and photos), download files, get config list and more.</Description>
     <AssemblyVersion>2.0.0</AssemblyVersion>
     <FileVersion>2.0.0</FileVersion>
     <Version>2.0.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>logo.png</PackageIcon>
     <NoWarn>NU5100</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
@@ -24,19 +25,17 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-   </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\LICENSE" Link="LICENSE" Pack="true" PackagePath="" />
+        <None Include="..\..\logo.png" Pack="true" PackagePath="" />
+        <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="" />
+    </ItemGroup>
 
   <ItemGroup>
-    <None Update="SDK\AudioRender.dll">
+    <None Update="nuget.exe">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="HikvisionSDK\AudioRender.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SDK\EagleEyeRender.dll">
@@ -48,67 +47,67 @@
     <None Update="SDK\GdiPlus.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCCore.dll">
+    <None Update="HikvisionSDK\HCCore.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SDK\HCCore.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDK.dll">
+    <None Update="HikvisionSDK\HCNetSDK.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SDK\HCNetSDK.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\AnalyzeData.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\AnalyzeData.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\AudioIntercom.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\AudioIntercom.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCAlarm.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCAlarm.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCAlarm.lib">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCAlarm.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCCoreDevCfg.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCCoreDevCfg.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCDisplay.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCDisplay.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCGeneralCfgMgr.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCGeneralCfgMgr.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCGeneralCfgMgr.lib">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCGeneralCfgMgr.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCIndustry.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCIndustry.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCPlayBack.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCPlayBack.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCPreview.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCPreview.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCPreview.lib">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCPreview.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\HCVoiceTalk.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\HCVoiceTalk.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\libiconv2.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\libiconv2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\OpenAL32.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\OpenAL32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\StreamTransClient.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\StreamTransClient.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\HCNetSDKCom\SystemTransform.dll">
+    <None Update="HikvisionSDK\HCNetSDKCom\SystemTransform.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SDK\hlog.dll">
@@ -144,7 +143,7 @@
     <None Update="SDK\NPQos.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\PlayCtrl.dll">
+    <None Update="HikvisionSDK\PlayCtrl.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SDK\PlayCtrl.lib">
@@ -153,7 +152,7 @@
     <None Update="SDK\ssleay32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SDK\SuperRender.dll">
+    <None Update="HikvisionSDK\SuperRender.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SDK\YUVProcess.dll">
