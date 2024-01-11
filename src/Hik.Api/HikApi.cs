@@ -17,10 +17,10 @@ namespace Hik.Api
     public class HikApi : IHikApi, IDisposable
     {
         private static bool initialized = false;
-        private VideoService videoService;
-        private PhotoService pictureService;
-        private PlaybackService playbackService;
-        private ConfigService configService;
+        private IVideoService videoService;
+        private IPhotoService pictureService;
+        private IPlaybackService playbackService;
+        private IConfigService configService;
 
         internal const string HCNetSDK = @"SDK\HCNetSDK.dll";
         /// <summary>
@@ -38,7 +38,7 @@ namespace Hik.Api
 
         /// <summary>Gets the video service.</summary>
         /// <value>The video service.</value>
-        public VideoService VideoService
+        public IVideoService VideoService
         {
             get
             {
@@ -48,7 +48,7 @@ namespace Hik.Api
 
         /// <summary>Gets the photo service.</summary>
         /// <value>The photo service.</value>
-        public PhotoService PhotoService
+        public IPhotoService PhotoService
         {
             get
             {
@@ -58,7 +58,7 @@ namespace Hik.Api
 
         /// <summary>Gets the playback service.</summary>
         /// <value>The playback service.</value>
-        public PlaybackService PlaybackService
+        public IPlaybackService PlaybackService
         {
             get
             {
@@ -69,7 +69,7 @@ namespace Hik.Api
         /// <summary>
         /// Config service
         /// </summary>
-        public ConfigService ConfigService
+        public IConfigService ConfigService
         {
             get
             {
@@ -142,7 +142,7 @@ namespace Hik.Api
         /// <param name="password">password.</param>
         /// <returns>User session</returns>
         /// <remarks>It supports 32 different user names for DS7116, DS81xx, DS90xx and DS91xx series devices, and 128 users login at the same time.Other devices support 16 different user names and 128 users login at the same time. SDK supports 512 * login.UserID is incremented one by one, from 0 to 511 and then return to 0. Logout and NET_DVR_Cleanup will not initialize the UserID to 0. If client offline abnormally, the device will keep the UserID 5 minutes, and the UserID will invalid after the valid time.</remarks>
-        public static HikApi Login(string ipAddress, int port, string userName, string password)
+        public static IHikApi Login(string ipAddress, int port, string userName, string password)
         {
             NET_DVR_DEVICEINFO_V30 deviceInfo = new NET_DVR_DEVICEINFO_V30();
             int userId = SdkHelper.InvokeSDK(() => NET_DVR_Login_V30(ipAddress, port, userName, password, ref deviceInfo));
@@ -205,7 +205,7 @@ namespace Hik.Api
                 uint dwReturn = 0;
                 int iGroupNo = 0;
 
-                var ipChannelsConfig = SdkHelper.InvokeSDK(() => ConfigService.NET_DVR_GetDVRConfig(userId, HikConst.NET_DVR_GET_IPPARACFG_V40, iGroupNo, ptrIpParaCfgV40, (uint)dwSize, ref dwReturn));
+                var ipChannelsConfig = SdkHelper.InvokeSDK(() => Services.ConfigService.NET_DVR_GetDVRConfig(userId, HikConst.NET_DVR_GET_IPPARACFG_V40, iGroupNo, ptrIpParaCfgV40, (uint)dwSize, ref dwReturn));
                 if (ipChannelsConfig)
                 {
                     // success

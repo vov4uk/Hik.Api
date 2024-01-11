@@ -2,15 +2,16 @@
 using System;
 using Hik.Api.Helpers;
 using Hik.Api.Struct.Video;
+using Hik.Api.Abstraction;
 
 namespace Hik.Api.Services
 {
     /// <summary>
     /// Playback Service
     /// </summary>
-    public class PlaybackService
+    public class PlaybackService : IPlaybackService
     {
-        private HikApi session;
+        private readonly HikApi session;
 
         internal PlaybackService(HikApi session)
         {

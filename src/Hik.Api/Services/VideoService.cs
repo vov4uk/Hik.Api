@@ -10,7 +10,7 @@ namespace Hik.Api.Services
     /// <summary>
     /// Video service
     /// </summary>
-    public class VideoService : FileService
+    public class VideoService : FileService, IVideoService
     {
         internal VideoService(HikApi session): base(session) { }
 

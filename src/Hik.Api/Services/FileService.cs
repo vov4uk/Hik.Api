@@ -10,12 +10,12 @@ namespace Hik.Api.Services
     /// <summary>
     /// Base class to download files
     /// </summary>
-    public abstract class FileService
+    public abstract class FileService : IFileService
     {
         /// <summary>
         /// session
         /// </summary>
-        protected HikApi session;
+        protected readonly HikApi session;
 
         internal FileService(HikApi session)
         {

@@ -1,4 +1,4 @@
-﻿using Hik.Api.Services;
+﻿using System;
 
 namespace Hik.Api.Abstraction
 {
@@ -8,12 +8,16 @@ namespace Hik.Api.Abstraction
     public interface IHikApi
     {
         /// <summary>
+        /// Occurs when [disconnected].
+        /// </summary>
+        event EventHandler Disconnected;
+        /// <summary>
         /// Gets the video service.
         /// </summary>
         /// <value>
         /// The video service.
         /// </value>
-        VideoService VideoService { get; }
+        IVideoService VideoService { get; }
 
         /// <summary>
         /// Gets the photo service.
@@ -21,7 +25,7 @@ namespace Hik.Api.Abstraction
         /// <value>
         /// The photo service.
         /// </value>
-        PhotoService PhotoService { get; }
+        IPhotoService PhotoService { get; }
 
         /// <summary>
         /// Gets the playback service.
@@ -29,7 +33,7 @@ namespace Hik.Api.Abstraction
         /// <value>
         /// The playback service.
         /// </value>
-        PlaybackService PlaybackService { get; }
+        IPlaybackService PlaybackService { get; }
 
         /// <summary>
         /// Gets the config service.
@@ -37,7 +41,7 @@ namespace Hik.Api.Abstraction
         /// <value>
         /// The config service.
         /// </value>
-        ConfigService ConfigService { get; }
+        IConfigService ConfigService { get; }
 
         /// <summary>Logouts the user.</summary>
         void Logout();

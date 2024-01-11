@@ -1,4 +1,5 @@
-﻿using Hik.Api.Data;
+﻿using Hik.Api.Abstraction;
+using Hik.Api.Data;
 using Hik.Api.Helpers;
 using Hik.Api.Struct;
 using Hik.Api.Struct.Config;
@@ -11,9 +12,9 @@ namespace Hik.Api.Services
     /// <summary>
     /// Config service
     /// </summary>
-    public class ConfigService
+    public class ConfigService: IConfigService
     {
-        private HikApi session;
+        private readonly HikApi session;
 
         internal ConfigService(HikApi session)
         {

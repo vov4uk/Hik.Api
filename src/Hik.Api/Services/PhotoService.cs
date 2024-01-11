@@ -11,7 +11,7 @@ namespace Hik.Api.Services
     /// <summary>
     /// Photo service
     /// </summary>
-    public class PhotoService : FileService
+    public class PhotoService : FileService, IPhotoService
     {
         internal PhotoService(HikApi session) : base(session) { }
 
