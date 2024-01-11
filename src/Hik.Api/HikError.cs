@@ -2,7 +2,7 @@
 
 namespace Hik.Api
 {
-    internal enum HikError
+    internal enum HikError : uint
     {
         [Description("No error.")]
         NET_DVR_NOERROR = 0,
@@ -145,7 +145,7 @@ namespace Hik.Api
         [Description("The number of login or preview connections has exceeded the SDK limitation.")]
         NET_DVR_MAX_NUM = 46,
 
-        [Description("User doest not exist. The user ID has been logged out or unavailable.")]
+        [Description("User does not exist. The user ID has been logged out or unavailable.")]
         NET_DVR_USERNOTEXIST = 47,
 
         [Description("Writing FLASH error. Failed to write FLASH during device upgrade.")]
@@ -310,10 +310,10 @@ namespace Hik.Api
         [Description("No current upgrade pack.")]
         NET_DVR_NO_CURRENT_UPDATEFILE = 101,
 
-        [Description("The user has not logined the device.")]
+        [Description("The user has not logged the device.")]
         NET_DVR_USER_NOT_SUCC_LOGIN = 102,
 
-        [Description("It is using the log swtich file.")]
+        [Description("It is using the log switch file.")]
         NET_DVR_USE_LOG_SWITCH_FILE = 103,
 
         [Description("The ports used to bound in port pool is exhausted.")]

@@ -10,14 +10,20 @@ namespace Hik.Api.Services
     /// </summary>
     public class PlaybackService
     {
+        private HikApi session;
+
+        internal PlaybackService(HikApi session)
+        {
+            this.session = session;
+        }
+
         /// <summary>
         /// Start live preview without callback, all receiver live data will be handled by PictureBox Handle
         /// </summary>
-        /// <param name="userId">user identifier.</param>
         /// <param name="channel">channel.</param>
         /// <param name="playbackWindowHandler">System.Windows.Forms.PictureBox Handle</param>
         /// <returns></returns>
-        public int StartPlayBack(int userId, int channel, IntPtr? playbackWindowHandler = null)
+        public int StartPlayBack(int channel, IntPtr? playbackWindowHandler = null)
         {
             NET_DVR_PREVIEWINFO lpPreviewInfo = new NET_DVR_PREVIEWINFO
             {
@@ -31,29 +37,28 @@ namespace Hik.Api.Services
                 hPlayWnd = playbackWindowHandler ?? IntPtr.Zero
             };
 
-            return SdkHelper.InvokeSDK(() => NET_DVR_RealPlay_V40(userId, ref lpPreviewInfo, null, new IntPtr()));
+            return SdkHelper.InvokeSDK(() => NET_DVR_RealPlay_V40(session.UserId, ref lpPreviewInfo, null, new IntPtr()));
         }
 
         /// <summary>
         /// Stop real-time preview
         /// </summary>
-        /// <param name="palybackId">The palyback identifier.</param>
+        /// <param name="playbackId">The playback identifier.</param>
         /// <returns>
         /// TRUE means success, FALSE means failure
         /// </returns>
-        public bool StopPlayBack(int palybackId) => SdkHelper.InvokeSDK(() => NET_DVR_StopRealPlay(palybackId));
+        public bool StopPlayBack(int playbackId) => SdkHelper.InvokeSDK(() => NET_DVR_StopRealPlay(playbackId));
 
         /// <summary>
         /// Start recording live stream to filePath in .mp4 format
         /// </summary>
         /// <param name="playbackId">playback identifier.</param>
         /// <param name="filePath">file path.</param>
-        /// <param name="userId">user identifier.</param>
         /// <param name="channel">channel.</param>
         /// <returns></returns>
-        public bool StartRecording(int playbackId, string filePath, int userId, int channel)
+        public bool StartRecording(int playbackId, string filePath, int channel)
         {
-            SdkHelper.InvokeSDK(() => NET_DVR_MakeKeyFrame(userId, channel));
+            SdkHelper.InvokeSDK(() => NET_DVR_MakeKeyFrame(session.UserId, channel));
             return SdkHelper.InvokeSDK(() => NET_DVR_SaveRealData(playbackId, filePath));
         }
 
@@ -67,8 +72,9 @@ namespace Hik.Api.Services
             return SdkHelper.InvokeSDK(() => NET_DVR_StopSaveRealData(playbackId));
         }
 
+        #region SDK
         /// <summary>
-        /// Make the mian stream create a key frame(I frame)
+        /// Make the main stream create a key frame(I frame)
         /// </summary>
         /// <param name="lUserID">The return value of NET_DVR_Login_V30</param>
         /// <param name="lChannel">Channel number.</param>
@@ -123,5 +129,6 @@ namespace Hik.Api.Services
         /// <returns>TRUE means success, FALSE means failure</returns>
         [DllImport(HikApi.HCNetSDK)]
         private static extern bool NET_DVR_StopRealPlay(int iRealHandle);
+        #endregion
     }
 }

@@ -32,10 +32,14 @@
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="nuget.exe">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Update="SDK\AudioRender.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

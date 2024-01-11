@@ -6,22 +6,22 @@ using Hik.Api.Struct.Photo;
 using System;
 using System.Runtime.InteropServices;
 
-
 namespace Hik.Api.Services
 {
     /// <summary>
     /// Photo service
     /// </summary>
-    public class HikPhotoService : FileService
+    public class PhotoService : FileService
     {
+        internal PhotoService(HikApi session) : base(session) { }
+
         /// <summary>
         /// Download File
         /// </summary>
-        /// <param name="userId">User identifier</param>
         /// <param name="remoteFileName">remote file name</param>
         /// <param name="size">Remote file size</param>
         /// <param name="destinationPath">Save path</param>
-        public virtual void DownloadFile(int userId, string remoteFileName, long size, string destinationPath)
+        public virtual void DownloadFile(string remoteFileName, long size, string destinationPath)
         {
             if (size > 0)
             {
@@ -32,9 +32,9 @@ namespace Hik.Api.Services
                     dwBufLen = (uint)size
                 };
 
-                if (SdkHelper.InvokeSDK(() => NET_DVR_GetPicture_V50(userId, ref temp)))
+                if (SdkHelper.InvokeSDK(() => NET_DVR_GetPicture_V50(session.UserId, ref temp)))
                 {
-                    SdkHelper.InvokeSDK(() => NET_DVR_GetPicture(userId, temp.pDVRFileName, destinationPath));
+                    SdkHelper.InvokeSDK(() => NET_DVR_GetPicture(session.UserId, temp.pDVRFileName, destinationPath));
                 }
 
                 Marshal.FreeHGlobal(temp.pSavedFileBuf);
@@ -44,12 +44,11 @@ namespace Hik.Api.Services
         /// <summary>
         /// Download file
         /// </summary>
-        /// <param name="userId">User identifier</param>
         /// <param name="photo">Hik remote file</param>
         /// <param name="destinationPath">Save path</param>
-        public virtual void DownloadFile(int userId, HikRemoteFile photo, string destinationPath)
+        public virtual void DownloadFile(HikRemoteFile photo, string destinationPath)
         {
-            DownloadFile(userId, photo.Name, photo.Size, destinationPath);
+            DownloadFile(photo.Name, photo.Size, destinationPath);
         }
 
         /// <summary>Stops the find.</summary>
@@ -71,12 +70,11 @@ namespace Hik.Api.Services
         }
 
         /// <summary>Starts the find.</summary>
-        /// <param name="userId">The user identifier.</param>
         /// <param name="periodStart">The period start.</param>
         /// <param name="periodEnd">The period end.</param>
         /// <param name="channel">The channel.</param>
         /// <returns>Find identifier</returns>
-        protected override int StartFind(int userId, DateTime periodStart, DateTime periodEnd, int channel)
+        protected override int StartFind(DateTime periodStart, DateTime periodEnd, int channel)
         {
 
             NET_DVR_FIND_PICTURE_PARAM findConditions = new NET_DVR_FIND_PICTURE_PARAM
@@ -87,9 +85,10 @@ namespace Hik.Api.Services
                 struStopTime = new NET_DVR_TIME(periodEnd)
             };
 
-            return SdkHelper.InvokeSDK(() => NET_DVR_FindPicture(userId, ref findConditions));
+            return SdkHelper.InvokeSDK(() => NET_DVR_FindPicture(session.UserId, ref findConditions));
         }
 
+        #region SDK
         /// <summary>
         /// This API is used to get picture one by one.
         /// </summary>
@@ -122,7 +121,7 @@ namespace Hik.Api.Services
         /// This API is used to get picture data and save it in specified memory space.
         /// </summary>
         /// <param name="lUserID">User ID, the return value of NET_DVR_Login_V40 </param>
-        /// <param name="lpPicParam">Return temprorary file</param>
+        /// <param name="lpPicParam">Return temporary file</param>
         /// <returns>Returns TRUE for success, and FALSE for failure. When FALSE is returned, call NET_DVR_GetLastError to get the error code.</returns>
         [DllImport(HikApi.HCNetSDK)]
         private static extern bool NET_DVR_GetPicture_V50(int lUserID, ref NET_DVR_PIC_PARAM lpPicParam);
@@ -137,5 +136,6 @@ namespace Hik.Api.Services
         /// <remarks>The picture format is JPEG, and the postfix of file name is ".jpg".</remarks>
         [DllImport(HikApi.HCNetSDK)]
         private static extern bool NET_DVR_GetPicture(int lUserID, string sDVRFileName, [In] [MarshalAs(UnmanagedType.LPStr)] string sSavedFileName);
+        #endregion
     }
 }
