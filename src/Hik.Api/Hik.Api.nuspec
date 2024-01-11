@@ -9,10 +9,11 @@
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/vov4uk/Hik.Api</projectUrl>
     <repository type="git" url="https://github.com/vov4uk/Hik.Api" branch="main" />
-    <description>Wrapper over Hikvision SDK version 5.3.6.30 x64. It allows login, fetch files list (videos and photos), download files, get config list and more</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <description>$description$</description>
+    <releaseNotes>Added ConfigService, remove Session class, hide UserId parameter</releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>Hikvision, SDK, ipcamera, photo, video</tags>
+    <icon>images\logo.png</icon>
     <contentFiles>
       <!-- this sets "CopyIfNewer" on all files in the project that references this package -->
       <files include="**/*" buildAction="None" copyToOutput="true"/>
@@ -22,6 +23,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="..\..\logo.png" target="images\" />
     <file src="bin\$configuration$\netstandard2.1\SDK\*.*" target="contentFiles\any\any\SDK"/>
     <file src="bin\$configuration$\netstandard2.1\SDK\HCNetSDKCom\*.*" target="contentFiles\any\any\SDK\HCNetSDKCom\"/>
   </files>

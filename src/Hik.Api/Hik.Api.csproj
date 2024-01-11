@@ -11,11 +11,12 @@
     <RepositoryUrl>https://github.com/vov4uk/Hik.Api.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>Wrapper over Hikvision SDK version 5.3.6.30 x64. It allows login, fetch files list (videos and photos), download files, get config list and more.</Description>
-    <AssemblyVersion>1.0.14</AssemblyVersion>
-    <FileVersion>1.0.14</FileVersion>
-    <Version>1.0.14</Version>
+    <Description>Wrapper over Hikvision NetSDK (v5.3.6.30 win-x64). It allows login, fetch files list (videos and photos), download files, get config list and more.</Description>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <FileVersion>2.0.0</FileVersion>
+    <Version>2.0.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>logo.png</PackageIcon>
     <NoWarn>NU5100</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
@@ -24,17 +25,11 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-   </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\LICENSE" Link="LICENSE" Pack="true" PackagePath="" />
+        <None Include="..\..\logo.png" Pack="true" PackagePath="" />
+        <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="" />
+    </ItemGroup>
 
   <ItemGroup>
     <None Update="nuget.exe">
