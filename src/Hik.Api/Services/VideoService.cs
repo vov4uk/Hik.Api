@@ -12,7 +12,11 @@ namespace Hik.Api.Services
     /// </summary>
     public class VideoService : FileService, IVideoService
     {
-        internal VideoService(HikApi session): base(session) { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VideoService"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        public VideoService(IHikApi session): base(session) { }
 
         /// <summary>
         /// Start download File

@@ -13,7 +13,11 @@ namespace Hik.Api.Services
     /// </summary>
     public class PhotoService : FileService, IPhotoService
     {
-        internal PhotoService(HikApi session) : base(session) { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PhotoService"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        public PhotoService(IHikApi session) : base(session) { }
 
         /// <summary>
         /// Download File

@@ -22,11 +22,16 @@ namespace Hik.Api
         private IPlaybackService playbackService;
         private IConfigService configService;
 
-        internal const string HCNetSDK = @"SDK\HCNetSDK.dll";
+        internal const string HCNetSDK = @"HikvisionSDK\HCNetSDK.dll";
         /// <summary>
         /// When connection is lost
         /// </summary>
         public event EventHandler Disconnected;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HikApi"/> class.
+        /// </summary>
+        public HikApi() { }
 
         private HikApi(int userId, string host, NET_DVR_DEVICEINFO_V30 deviceInfo)
         {

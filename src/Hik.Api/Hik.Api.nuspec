@@ -24,7 +24,7 @@
   </metadata>
   <files>
     <file src="..\..\logo.png" target="images\" />
-    <file src="bin\$configuration$\netstandard2.1\SDK\*.*" target="contentFiles\any\any\SDK"/>
-    <file src="bin\$configuration$\netstandard2.1\SDK\HCNetSDKCom\*.*" target="contentFiles\any\any\SDK\HCNetSDKCom\"/>
+    <file src="bin\$configuration$\netstandard2.1\HikvisionSDK\*.*" target="contentFiles\any\any\HikvisionSDK"/>
+    <file src="bin\$configuration$\netstandard2.1\HikvisionSDK\HCNetSDKCom\*.*" target="contentFiles\any\any\HikvisionSDK\HCNetSDKCom\"/>
   </files>
 </package>

@@ -14,9 +14,13 @@ namespace Hik.Api.Services
     /// </summary>
     public class ConfigService: IConfigService
     {
-        private readonly HikApi session;
+        private readonly IHikApi session;
 
-        internal ConfigService(HikApi session)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigService"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        public ConfigService(IHikApi session)
         {
             this.session = session;
         }

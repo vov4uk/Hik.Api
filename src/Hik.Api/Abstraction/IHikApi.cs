@@ -8,6 +8,22 @@ namespace Hik.Api.Abstraction
     public interface IHikApi
     {
         /// <summary>
+        /// Gets the user identifier.
+        /// </summary>
+        /// <value>
+        /// The user identifier.
+        /// </value>
+        int UserId { get; }
+
+        /// <summary>
+        /// Gets the default ip channel.
+        /// </summary>
+        /// <value>
+        /// The default ip channel.
+        /// </value>
+        byte DefaultIpChannel { get; }
+
+        /// <summary>
         /// Occurs when [disconnected].
         /// </summary>
         event EventHandler Disconnected;

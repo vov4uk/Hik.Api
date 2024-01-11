@@ -15,9 +15,13 @@ namespace Hik.Api.Services
         /// <summary>
         /// session
         /// </summary>
-        protected readonly HikApi session;
+        protected readonly IHikApi session;
 
-        internal FileService(HikApi session)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileService"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        public FileService(IHikApi session)
         {
             this.session = session;
         }

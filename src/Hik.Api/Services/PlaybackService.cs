@@ -11,9 +11,13 @@ namespace Hik.Api.Services
     /// </summary>
     public class PlaybackService : IPlaybackService
     {
-        private readonly HikApi session;
+        private readonly IHikApi session;
 
-        internal PlaybackService(HikApi session)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlaybackService"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        public PlaybackService(IHikApi session)
         {
             this.session = session;
         }
